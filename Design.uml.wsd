@@ -1,0 +1,33 @@
+@startuml
+hide footbox
+participant Consumer as Consumer
+participant BLECharacteristicRegistry as Reg
+
+rnote over Reg: Registry will be instantiated as either ArmsLengthServer or ArmsLengthProtoclClient
+
+Consumer -> Reg: attachCharacteristicRegisteredCallback(Consumer::onCharcteristicRegistered)
+Consumer -> Reg: attachValueChangedCallback(Consumer::onCharacteristicValueChanged)
+
+alt Server
+Reg -> Reg: registerCharacteristic(BLECharacteristic)
+else Client
+Reg -> Reg: registerCharacteristic(BLERemoteCharacteristic)
+end
+Reg -> Reg: characteristicRegistered(BLEUUID)
+Reg -> Consumer: onCharcteristicRegistered(BLEUUID) = true
+rnote over Consumer,Reg: Consumer is interested in this Characteristic, so it returns true.\nNote that multiple Consumers may be attached, and if *any* of them \nindicate interest in this Characteristic, then *all* will be notified below\nwhen the value changes.
+
+rnote over Reg: Later, the registered Characteristic's value has changed
+
+alt Server
+ -> Reg: LocalCharacteristicCallbacks::onWrite()
+else Client
+ -> Reg: global::onRemoteNotification(BLERemoteCharacteristic)
+Reg -> Reg: RemoteCharacteristicNotifyCallback::onNotify()
+Reg -> Reg: dispatchCharacteristicNotification()
+end
+Reg -> Reg: valueChanged(BLEUUID, data)
+Reg -> Consumer: onCharacteristicValueChanged(BLEUUID, data)
+rnote over Consumer,Reg: Consumer examines the UUID to identify the Characertistic that\nchanged, and handles the updated data value.
+
+@enduml
