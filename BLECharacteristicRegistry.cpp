@@ -227,22 +227,40 @@ void BLECharacteristicRegistry::attachValueChangedCallback(valueChanged_callback
 
 void BLECharacteristicRegistry::updateCharacteristic(BLEUUID characteristicUUID, uint8_t* pData, size_t length)
 {
+    Serial.print( F("BLECharacteristicRegistry::updateCharacteristic length ") );
+    Serial.println(length);
+
+    int numLocals = 0;
+    int numRemotes = 0;
     for (auto& characteristic : m_localCharacteristics)
     {
+        numLocals++;
+        
         if (characteristic->getUUID() == characteristicUUID)
         {
+            Serial.println( F("characteristic->setValue") );
+
             characteristic->setValue(pData, length);
+            valueChanged(characteristicUUID, pData, length, false /* !notify for local updates */);
             return;
         }
     }
     for (auto& characteristic : m_remoteCharacteristics)
     {
+        numRemotes++;
+        
         if (characteristic->getUUID() == characteristicUUID)
         {
+            Serial.println( F("characteristic->writeValue") );
+
             characteristic->writeValue(pData, length);
             return;
         }
     }
+            Serial.print(F("numLocals = "));
+            Serial.print(numLocals);
+            Serial.print(F(", numRemotes = "));
+            Serial.println(numRemotes);
 }
 
 bool BLECharacteristicRegistry::characteristicRegistered(BLEUUID characteristicUUID)
@@ -268,6 +286,59 @@ void BLECharacteristicRegistry::valueChanged(
     // Call out to event consumers to handle the updated value.
     for (auto& callback : m_valueChangedCallbacks)
     {
+    Serial.print( F("BLECharacteristicRegistry::valueChanged length ") );
+    Serial.println(length);
+
         callback(characteristicUUID, pData, length, isNotify);
     }
+}
+
+bool BLECharacteristicRegistry::getValue(
+    BLEUUID characteristicUUID,
+    uint8_t* pData,
+    size_t pDataCapacity,
+    size_t& lengthOut)
+{
+    if (!pData)
+    {
+        return false;
+    }
+
+    for (auto& characteristic : m_localCharacteristics)
+    {
+        if (characteristic->getUUID() == characteristicUUID)
+        {
+            lengthOut = characteristic->getLength();
+            if (pDataCapacity < lengthOut)
+            {
+                return false;
+            }
+
+            for (size_t i = 0; i < lengthOut; i++)
+            {
+                pData[i] = characteristic->getData()[i];
+            }
+            return true;
+        }
+    }
+    for (auto& characteristic : m_remoteCharacteristics)
+    {
+        if (characteristic->getUUID() == characteristicUUID)
+        {
+            String val = characteristic->readValue();
+
+            lengthOut = val.length();
+            if (pDataCapacity < lengthOut)
+            {
+                return false;
+            }
+
+            for (size_t i = 0; i < lengthOut; i++)
+            {
+                pData[i] = (uint8_t)val[i];
+            }
+            return true;
+        }
+    }
+    return false; // not found
 }

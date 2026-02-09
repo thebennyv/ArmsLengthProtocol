@@ -101,6 +101,13 @@ public:
         bool isNotify
         );
 
+    bool getValue(
+        BLEUUID characteristicUUID,
+        uint8_t* pData,
+        size_t pDataCapacity,
+        size_t& lengthOut
+        );
+
 protected:
 
     // Inheritors (Server and Client respectively) call these to announce the

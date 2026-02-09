@@ -8,6 +8,7 @@ class ArmsLengthProtocolMessage
 {
 public:
 
+    ArmsLengthProtocolMessage();
     ArmsLengthProtocolMessage(
         Services service,
         Characteristics characteristic,
@@ -44,12 +45,7 @@ protected:
     uint32_t m_characteristic; // See Characteristics enum
     uint32_t m_command; // See ScriptCommands, EyesCommands, etc.
 
-    static uint32_t getNextSequenceNumber()
-    {
-        static uint32_t sequenceNumber = 0;
-        return ++sequenceNumber;
-    }
-
+    static uint32_t getNextSequenceNumber();
 };
 
 #endif // ARMSLENGTHPROTOCOLMESSAGE_H
