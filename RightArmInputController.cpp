@@ -2,6 +2,7 @@
 #include <Arduino.h>
 
 #include "RightArmInputController.h"
+#include "RightArmPinout.h"
 #include "UUIDs.h"
 #include "ArmsLengthProtocolMessage.h"
 
@@ -40,11 +41,11 @@ RightArmInputController::RightArmInputController(
     BLECharacteristicRegistry& characteristicRegistry
     ):
     ArmsLengthController(characteristicRegistry),
-    thumb(this, D0, true, true), // activeLow, pullup
-    indexFinger(this, D1, true, true),
-    middleFinger(this, D2, true, true),
-    ringFinger(this, D3, true, true),
-    pinkyFinger(this, D4, true, true)
+    thumb(this, (int)RightArmPin_e::ThumbButton, true, true), // activeLow, pullup
+    indexFinger(this, (int)RightArmPin_e::IndexFingerButton, true, true),
+    middleFinger(this, (int)RightArmPin_e::MiddleFingerButton, true, true),
+    ringFinger(this, (int)RightArmPin_e::RingFingerButton, true, true),
+    pinkyFinger(this, (int)RightArmPin_e::PinkyFingerButton, true, true)
 {
     characteristicRegistry.attachCharacteristicRegisteredCallback(
         std::bind(
@@ -63,8 +64,6 @@ RightArmInputController::~RightArmInputController()
 
 void RightArmInputController::setup()
 {
-    pinMode(LED_BUILTIN, OUTPUT);
-
     thumb.button.attachClick(handleButtonSingleTap, &thumb);
     thumb.button.attachDoubleClick(handleButtonDoubleTap, &thumb);
     thumb.button.attachLongPressStart(handleButtonLongPress, &thumb);
@@ -144,10 +143,8 @@ void RightArmInputController::buttonPressed(AttachedButton* button, NumberOfPres
         switch (numPresses)
         {
         case LONGPRESS:
-            //digitalWrite(LED_BUILTIN, HIGH);  // turn the LED OFF (active low)
             break;
         case 1:
-            //digitalWrite(LED_BUILTIN, LOW);  // turn the LED ON (active low)
             break;
         case 2:
             toggleRightArmRocket();
@@ -169,6 +166,7 @@ void RightArmInputController::buttonPressed(AttachedButton* button, NumberOfPres
         case 1:
             break;
         case 2:
+            toggleLeftArmRocket();
             break;
         case 3:
             break;
@@ -274,6 +272,57 @@ void RightArmInputController::toggleRightArmRocket()
     Serial.print( F("updateCharacteristic") );
 
         characteristicRegistry.updateCharacteristic(UUIDs::UUID_RIGHT_ARM_ROCKET_CHARACTERISTIC, buf, numBytesSerialized);
+    }
+    else
+    {
+    Serial.print( F("Error serializing message") );
+
+        // Error
+    }
+}
+
+void RightArmInputController::toggleLeftArmRocket()
+{
+    bool isClosed = true;
+
+    ArmsLengthProtocolMessage msg;
+    uint8_t buf[sizeof(msg)];
+    size_t numBytesReceived = 0;
+
+    if (characteristicRegistry.getValue(UUIDs::UUID_LEFT_ARM_ROCKET_CHARACTERISTIC, buf, sizeof(buf), numBytesReceived))
+    {
+        if (msg.deserialize(buf, numBytesReceived))
+        {
+            switch (msg.getCommand())
+            {
+            default: // assume it is closed and fall through
+            case (uint32_t)RocketCommands::CLOSE:
+                isClosed = true;
+                break;
+            case (uint32_t)RocketCommands::OPEN:
+                isClosed = false;
+                break;
+            }
+        }
+    }
+
+    msg.setService(Services::LEFT_ARM_SERVICE);
+    msg.setCharacteristic(Characteristics::LEFT_ARM_ROCKET_CHARACTERISTIC);
+    if (isClosed)
+    {
+        msg.setCommand((uint32_t)RocketCommands::OPEN);
+    }
+    else
+    {
+        msg.setCommand((uint32_t)RocketCommands::CLOSE);
+    }
+
+    std::size_t numBytesSerialized = 0;
+    if (msg.serialize(buf, sizeof(buf), numBytesSerialized))
+    {
+    Serial.print( F("updateCharacteristic") );
+
+        characteristicRegistry.updateCharacteristic(UUIDs::UUID_LEFT_ARM_ROCKET_CHARACTERISTIC, buf, numBytesSerialized);
     }
     else
     {

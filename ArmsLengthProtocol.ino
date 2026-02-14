@@ -29,6 +29,7 @@
 #define LIMB_LEFT_LEG 7
 
 #define LIMB LIMB_RIGHT_ARM
+//#define LIMB LIMB_LEFT_ARM
 
 #if LIMB == LIMB_RIGHT_ARM /* Pick a single limb to be the BLE server */
 #define IS_BLE_SERVER 1
@@ -79,7 +80,7 @@ typedef std::vector<IArduinoApplication*> Applications;
   Applications applications = {&bleDevice, &limb, &controller, &scripts};
 #elif LIMB == LIMB_LEFT_ARM
   #include "LeftArm.h"
-  BLEDeviceType bleDevice("LeftArm");
+  BLEDeviceType bleDevice("XLeftArm");
   LeftArm limb(bleDevice);
   NullController controller(bleDevice);
   Applications applications = {&bleDevice, &limb, &controller};
@@ -146,10 +147,10 @@ void setup() {
 	// different servos may require different min/max settings
 	// for an accurate 0 to 180 sweep
   
-  Serial1.end(); 
+  //Serial1.end(); 
 
   Serial.begin(9600); 
-  Serial.println( F("Hello World") );
+  Serial.println( bleDevice.getDeviceName() );
 
   for (IArduinoApplication* application : applications)
   {

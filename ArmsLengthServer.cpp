@@ -57,7 +57,7 @@ void ArmsLengthServer::setup()
 {
     String serverName = "ArmsLengthServer " + m_deviceName;
 
-    BLEDevice::init(serverName.c_str());
+    BLEDevice::init(serverName);
 
     pArmsLengthBLEServer = BLEDevice::createServer();
     pArmsLengthBLEServer->setCallbacks(new MyServerCallbacks(this));
@@ -223,7 +223,7 @@ void ArmsLengthServer::setup()
     BLEDevice::getAdvertising()->addServiceUUID(UUIDs::UUID_LEFT_ARM_SERVICE);
     BLEDevice::getAdvertising()->addServiceUUID(UUIDs::UUID_RIGHT_LEG_SERVICE);
     BLEDevice::getAdvertising()->addServiceUUID(UUIDs::UUID_LEFT_LEG_SERVICE);
-    BLEDevice::getAdvertising()->setScanResponse(false);
+    BLEDevice::getAdvertising()->setScanResponse(true);
     //BLEDevice::getAdvertising()->setMinPreferred(0x0);  // set value to 0x00 to not advertise this parameter
     BLEDevice::startAdvertising();
 }
@@ -245,9 +245,11 @@ ArmsLengthServer::MyServerCallbacks::MyServerCallbacks(
 void ArmsLengthServer::MyServerCallbacks::onConnect(BLEServer *pServer)
 {
     pOwner->numConnectedClients++;
+    pServer->startAdvertising();
 }
 
 void ArmsLengthServer::MyServerCallbacks::onDisconnect(BLEServer *pServer)
 {
     pOwner->numConnectedClients--;
+    pServer->startAdvertising();
 }

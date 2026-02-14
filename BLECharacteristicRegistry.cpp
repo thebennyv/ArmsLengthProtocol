@@ -130,6 +130,7 @@ void BLECharacteristicRegistry::RemoteCharacteristicNotifyCallback::onNotify(
     size_t length,
     bool isNotify)
 {
+    Serial.println( "onNotify for " + characteristic->getUUID().toString() );
     m_notifyCallback(characteristic, data, length, isNotify); // calls dispatchCharacteristicNotification below
 }
 void BLECharacteristicRegistry::dispatchCharacteristicNotification(
@@ -193,12 +194,18 @@ void BLECharacteristicRegistry::registerCharacteristic(BLERemoteCharacteristic* 
 {
     if (characteristicRegistered(characteristic->getUUID()))
     {
+        Serial.println( "registerCharacteristic " + characteristic->getUUID().toString());
         // Set up remote characteristic notification callback
         BLECharacteristicRegistry::remoteCharacteristicNotifyCallbacks[characteristic] = this;
 
         if (characteristic->canNotify())
         {
+            Serial.println( "can notify ");
             characteristic->registerForNotify(onRemoteNotification);
+        }
+        else
+        {
+            Serial.println( "cannot notify ");
         }
         m_remoteCharacteristics.push_back(characteristic);
     }
@@ -241,8 +248,9 @@ void BLECharacteristicRegistry::updateCharacteristic(BLEUUID characteristicUUID,
             Serial.println( F("characteristic->setValue") );
 
             characteristic->setValue(pData, length);
+            characteristic->notify();
             valueChanged(characteristicUUID, pData, length, false /* !notify for local updates */);
-            return;
+            //return;
         }
     }
     for (auto& characteristic : m_remoteCharacteristics)
@@ -254,7 +262,8 @@ void BLECharacteristicRegistry::updateCharacteristic(BLEUUID characteristicUUID,
             Serial.println( F("characteristic->writeValue") );
 
             characteristic->writeValue(pData, length);
-            return;
+            //characteristic->notify();
+            //return;
         }
     }
             Serial.print(F("numLocals = "));

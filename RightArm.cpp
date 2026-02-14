@@ -1,4 +1,5 @@
 #include "RightArm.h"
+#include "RightArmPinout.h"
 #include "UUIDs.h"
 #include "ArmsLengthProtocolMessage.h"
 #include "EasingFunctions.h"
@@ -8,9 +9,9 @@ RightArm::RightArm(BLECharacteristicRegistry& characteristicRegistry):
     characteristicRegistry(characteristicRegistry),
     msgHandler(),
     rocketCover(),
-    rocketCoverServoPin(D7), // todo
+    rocketCoverServoPin((int)RightArmPin_e::RocketCoverServo),
     rocketArm(),
-    rocketArmServoPin(D8), // todo
+    rocketArmServoPin((int)RightArmPin_e::RocketArmServo),
     rocketState(),
     rocketState_t0()
 {
@@ -39,12 +40,12 @@ RightArm::~RightArm()
 
 void RightArm::setup()
 {
-//    pinMode(LED_BUILTIN, OUTPUT);
+    pinMode(LED_BUILTIN, OUTPUT);
 
 	ESP32PWM::allocateTimer(0);
 	ESP32PWM::allocateTimer(1);
-//	ESP32PWM::allocateTimer(2);
-//	ESP32PWM::allocateTimer(3);
+	ESP32PWM::allocateTimer(2);
+	ESP32PWM::allocateTimer(3);
 
 	// using default min/max of 1000us and 2000us
 	// different servos may require different min/max settings
@@ -58,8 +59,6 @@ void RightArm::setup()
 
 void RightArm::loop()
 {
-//    digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on
-
     loopLaser();
     loopRocket();
     loopRepulsor();

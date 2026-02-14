@@ -59,6 +59,7 @@ protected:
     AttachedButton pinkyFinger; // Tip of pinky finger
 
     void toggleRightArmRocket();
+    void toggleLeftArmRocket();
 
 };
 

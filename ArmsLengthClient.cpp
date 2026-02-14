@@ -78,9 +78,11 @@ ArmsLengthClient::MyAdvertisedDeviceCallbacks::MyAdvertisedDeviceCallbacks(
 
 void ArmsLengthClient::MyAdvertisedDeviceCallbacks::onResult(BLEAdvertisedDevice advertisedDevice)
 {
+    Serial.println("advertisedDevice '" + advertisedDevice.getName() + "'");
+
     // Could instead query it for a specific service UUID, but this is generic
     // and positions us to have multiple numbered servers (multiple suit instances).
-    if (advertisedDevice.getName().indexOf("ArmsLengthServer") != -1)
+    if (advertisedDevice.getName().indexOf("Arms" /*"ArmsLengthServer"*/) != -1)
     {
         pOwner->setServerDevice(new BLEAdvertisedDevice(advertisedDevice));
 
@@ -131,6 +133,8 @@ void ArmsLengthClient::setup()
     BLEDevice::getScan()->setWindow(30); // 30 milliseconds (examples used 449 ms)
     BLEDevice::getScan()->setActiveScan(true);
     BLEDevice::getScan()->start(30 /* seconds */, nullptr); // non-blocking version
+
+    Serial.println("BLEDevice started scan");
 }
 
 void ArmsLengthClient::loop()
