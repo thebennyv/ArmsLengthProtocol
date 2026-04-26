@@ -35,6 +35,7 @@ enum class Characteristics
     
     // Back Service Characteristics
     BACK_FLAPS_CHARACTERISTIC = 10,
+    SHOULDER_FLAPS_CHARACTERISTIC = 19,
     
     // Right Arm Service Characteristics
     RIGHT_ARM_LASER_CHARACTERISTIC = 11,
@@ -90,7 +91,7 @@ enum class ArcReactorCommands
     PULSE_ON = 2,
     PULSE_OFF = 3,
     FLASH = 4,
-    RAINBOW = 5,
+    PARTY = 5,
     FLICKER_ON = 6,
     FLICKER_OFF = 7,
     UNIBEAM = 8
