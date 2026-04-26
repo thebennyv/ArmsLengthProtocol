@@ -59,6 +59,15 @@ protected:
     AttachedButton pinkyFinger; // Tip of pinky finger
 
     void toggleRightArmRocket();
+    void dimEyes();
+    void toggleFaceplate();
+    void toggleEyes();
+    void resetReactor();
+    void toggleShoulderFlaps();
+    void toggleAllBackFlaps();
+    void partyMode();
+    void toggleChestFlaps();
+
     void toggleLeftArmRocket();
 
 };

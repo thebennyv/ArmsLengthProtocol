@@ -6,9 +6,7 @@
 #include "UUIDs.h"
 #include "ArmsLengthProtocolMessage.h"
 
-
-// For installation instructions see: https://github.com/mathertel/OneButton
-#include "lib/OneButton/src/OneButton.cpp"
+namespace { // anonymous
 
 static void handleButtonSingleTap(void* param)
 {
@@ -35,7 +33,7 @@ static void handleButtonMultiPress(void* param)
     attachedButton->controller->buttonPressed(attachedButton, numPresses);
 }
 
-
+} // namespace anonymous
 
 RightArmInputController::RightArmInputController(
     BLECharacteristicRegistry& characteristicRegistry
@@ -92,15 +90,10 @@ void RightArmInputController::setup()
 
 void RightArmInputController::loop()
 {
-//  Serial.println( F("thumb tick") );
     thumb.button.tick();
-//  Serial.println( F("indexFinger tick") );
     indexFinger.button.tick();
-//  Serial.println( F("middleFinger tick") );
     middleFinger.button.tick();
-//  Serial.println( F("ringFinger tick") );
     ringFinger.button.tick();
-//  Serial.println( F("pinkyFinger tick") );
     pinkyFinger.button.tick();
 }
 
@@ -145,9 +138,9 @@ void RightArmInputController::buttonPressed(AttachedButton* button, NumberOfPres
         case LONGPRESS:
             break;
         case 1:
+            toggleRightArmRocket();
             break;
         case 2:
-            toggleRightArmRocket();
             break;
         case 3:
             break;
@@ -158,15 +151,18 @@ void RightArmInputController::buttonPressed(AttachedButton* button, NumberOfPres
     
     if (button == &indexFinger)
     {
-  Serial.println( F(" index") );
+  Serial.println( F(" \n index") );
         switch (numPresses)
         {
         case LONGPRESS:
+            dimEyes();
             break;
         case 1:
+            toggleFaceplate();
             break;
         case 2:
-            toggleLeftArmRocket();
+            toggleEyes();
+            //toggleLeftArmRocket();
             break;
         case 3:
             break;
@@ -181,12 +177,16 @@ void RightArmInputController::buttonPressed(AttachedButton* button, NumberOfPres
         switch (numPresses)
         {
         case LONGPRESS:
+            resetReactor();
             break;
         case 1:
+            toggleShoulderFlaps();
             break;
         case 2:
+            toggleAllBackFlaps();
             break;
         case 3:
+            partyMode();
             break;
         default:
             break;
@@ -201,6 +201,7 @@ void RightArmInputController::buttonPressed(AttachedButton* button, NumberOfPres
         case LONGPRESS:
             break;
         case 1:
+            toggleChestFlaps();
             break;
         case 2:
             break;
@@ -269,14 +270,290 @@ void RightArmInputController::toggleRightArmRocket()
     std::size_t numBytesSerialized = 0;
     if (msg.serialize(buf, sizeof(buf), numBytesSerialized))
     {
-    Serial.print( F("updateCharacteristic") );
-
         characteristicRegistry.updateCharacteristic(UUIDs::UUID_RIGHT_ARM_ROCKET_CHARACTERISTIC, buf, numBytesSerialized);
     }
     else
     {
-    Serial.print( F("Error serializing message") );
+        // Error
+    }
+}
 
+void RightArmInputController::dimEyes()
+{
+    // todo
+}
+
+void RightArmInputController::toggleFaceplate()
+{
+    bool isClosed = true;
+
+    ArmsLengthProtocolMessage msg;
+    uint8_t buf[sizeof(msg)];
+    size_t numBytesReceived = 0;
+
+    if (characteristicRegistry.getValue(UUIDs::UUID_FACEPLATE_CHARACTERISTIC, buf, sizeof(buf), numBytesReceived))
+    {
+        if (msg.deserialize(buf, numBytesReceived))
+        {
+            switch (msg.getCommand())
+            {
+            default: // assume it is closed and fall through
+            case (uint32_t)FaceplateCommands::CLOSE:
+                isClosed = true;
+                break;
+            case (uint32_t)FaceplateCommands::OPEN:
+                isClosed = false;
+                break;
+            }
+        }
+    }
+
+    msg.setService(Services::HELMET_SERVICE);
+    msg.setCharacteristic(Characteristics::FACEPLATE_CHARACTERISTIC);
+    if (isClosed)
+    {
+        msg.setCommand((uint32_t)FaceplateCommands::OPEN);
+    }
+    else
+    {
+        msg.setCommand((uint32_t)FaceplateCommands::CLOSE);
+    }
+
+    std::size_t numBytesSerialized = 0;
+    if (msg.serialize(buf, sizeof(buf), numBytesSerialized))
+    {
+        characteristicRegistry.updateCharacteristic(UUIDs::UUID_FACEPLATE_CHARACTERISTIC, buf, numBytesSerialized);
+    }
+    else
+    {
+        // Error
+    }
+}
+
+void RightArmInputController::toggleEyes()
+{
+    bool eyesAreOn = true;
+
+    ArmsLengthProtocolMessage msg;
+    uint8_t buf[sizeof(msg)];
+    size_t numBytesReceived = 0;
+
+    if (characteristicRegistry.getValue(UUIDs::UUID_EYES_CHARACTERISTIC, buf, sizeof(buf), numBytesReceived))
+    {
+        if (msg.deserialize(buf, numBytesReceived))
+        {
+            switch (msg.getCommand())
+            {
+            default: // assume it is closed and fall through
+            case (uint32_t)EyesCommands::OFF:
+                eyesAreOn = false;
+                break;
+            case (uint32_t)EyesCommands::ON:
+                eyesAreOn = true;
+                break;
+            }
+        }
+    }
+
+    msg.setService(Services::HELMET_SERVICE);
+    msg.setCharacteristic(Characteristics::EYES_CHARACTERISTIC);
+    if (eyesAreOn)
+    {
+        msg.setCommand((uint32_t)EyesCommands::OFF);
+    }
+    else
+    {
+        msg.setCommand((uint32_t)EyesCommands::ON);
+    }
+
+    std::size_t numBytesSerialized = 0;
+    if (msg.serialize(buf, sizeof(buf), numBytesSerialized))
+    {
+        characteristicRegistry.updateCharacteristic(UUIDs::UUID_EYES_CHARACTERISTIC, buf, numBytesSerialized);
+    }
+    else
+    {
+        // Error
+    }
+}
+
+void RightArmInputController::resetReactor()
+{
+    ArmsLengthProtocolMessage msg;
+    uint8_t buf[sizeof(msg)];
+
+    msg.setService(Services::CHEST_SERVICE);
+    msg.setCharacteristic(Characteristics::ARC_REACTOR_CHARACTERISTIC);
+    msg.setCommand((uint32_t)ArcReactorCommands::ON);
+
+    std::size_t numBytesSerialized = 0;
+    if (msg.serialize(buf, sizeof(buf), numBytesSerialized))
+    {
+        characteristicRegistry.updateCharacteristic(UUIDs::UUID_ARC_REACTOR_CHARACTERISTIC, buf, numBytesSerialized);
+    }
+    else
+    {
+        // Error
+    }
+}
+
+void RightArmInputController::toggleShoulderFlaps()
+{
+    bool isClosed = true;
+
+    ArmsLengthProtocolMessage msg;
+    uint8_t buf[sizeof(msg)];
+    size_t numBytesReceived = 0;
+
+    if (characteristicRegistry.getValue(UUIDs::UUID_SHOULDER_FLAPS_CHARACTERISTIC, buf, sizeof(buf), numBytesReceived))
+    {
+        if (msg.deserialize(buf, numBytesReceived))
+        {
+            switch (msg.getCommand())
+            {
+            default: // assume it is closed and fall through
+            case (uint32_t)FlapsCommands::CLOSE:
+                isClosed = true;
+                break;
+            case (uint32_t)FlapsCommands::OPEN:
+                isClosed = false;
+                break;
+            }
+        }
+    }
+
+    msg.setService(Services::BACK_SERVICE);
+    msg.setCharacteristic(Characteristics::SHOULDER_FLAPS_CHARACTERISTIC);
+    if (isClosed)
+    {
+        msg.setCommand((uint32_t)FlapsCommands::OPEN);
+    }
+    else
+    {
+        msg.setCommand((uint32_t)FlapsCommands::CLOSE);
+    }
+
+    std::size_t numBytesSerialized = 0;
+    if (msg.serialize(buf, sizeof(buf), numBytesSerialized))
+    {
+        characteristicRegistry.updateCharacteristic(UUIDs::UUID_SHOULDER_FLAPS_CHARACTERISTIC, buf, numBytesSerialized);
+    }
+    else
+    {
+        // Error
+    }
+}
+
+void RightArmInputController::toggleAllBackFlaps()
+{
+    bool isClosed = true;
+
+    ArmsLengthProtocolMessage msg;
+    uint8_t buf[sizeof(msg)];
+    size_t numBytesReceived = 0;
+
+    if (characteristicRegistry.getValue(UUIDs::UUID_BACK_FLAPS_CHARACTERISTIC, buf, sizeof(buf), numBytesReceived))
+    {
+        if (msg.deserialize(buf, numBytesReceived))
+        {
+            switch (msg.getCommand())
+            {
+            default: // assume it is closed and fall through
+            case (uint32_t)FlapsCommands::CLOSE:
+                isClosed = true;
+                break;
+            case (uint32_t)FlapsCommands::OPEN:
+                isClosed = false;
+                break;
+            }
+        }
+    }
+
+    msg.setService(Services::BACK_SERVICE);
+    msg.setCharacteristic(Characteristics::BACK_FLAPS_CHARACTERISTIC);
+    if (isClosed)
+    {
+        msg.setCommand((uint32_t)FlapsCommands::OPEN);
+    }
+    else
+    {
+        msg.setCommand((uint32_t)FlapsCommands::CLOSE);
+    }
+
+    std::size_t numBytesSerialized = 0;
+    if (msg.serialize(buf, sizeof(buf), numBytesSerialized))
+    {
+        characteristicRegistry.updateCharacteristic(UUIDs::UUID_BACK_FLAPS_CHARACTERISTIC, buf, numBytesSerialized);
+    }
+    else
+    {
+        // Error
+    }
+}
+
+void RightArmInputController::partyMode()
+{
+    ArmsLengthProtocolMessage msg;
+    uint8_t buf[sizeof(msg)];
+
+    msg.setService(Services::CHEST_SERVICE);
+    msg.setCharacteristic(Characteristics::ARC_REACTOR_CHARACTERISTIC);
+    msg.setCommand((uint32_t)ArcReactorCommands::PARTY);
+
+    std::size_t numBytesSerialized = 0;
+    if (msg.serialize(buf, sizeof(buf), numBytesSerialized))
+    {
+        characteristicRegistry.updateCharacteristic(UUIDs::UUID_ARC_REACTOR_CHARACTERISTIC, buf, numBytesSerialized);
+    }
+    else
+    {
+        // Error
+    }
+}
+
+void RightArmInputController::toggleChestFlaps()
+{
+    bool isClosed = true;
+
+    ArmsLengthProtocolMessage msg;
+    uint8_t buf[sizeof(msg)];
+    size_t numBytesReceived = 0;
+
+    if (characteristicRegistry.getValue(UUIDs::UUID_CHEST_FLAPS_CHARACTERISTIC, buf, sizeof(buf), numBytesReceived))
+    {
+        if (msg.deserialize(buf, numBytesReceived))
+        {
+            switch (msg.getCommand())
+            {
+            default: // assume it is closed and fall through
+            case (uint32_t)FlapsCommands::CLOSE:
+                isClosed = true;
+                break;
+            case (uint32_t)FlapsCommands::OPEN:
+                isClosed = false;
+                break;
+            }
+        }
+    }
+
+    msg.setService(Services::CHEST_SERVICE);
+    msg.setCharacteristic(Characteristics::ARC_REACTOR_CHARACTERISTIC);
+    if (isClosed)
+    {
+        msg.setCommand((uint32_t)FlapsCommands::OPEN);
+    }
+    else
+    {
+        msg.setCommand((uint32_t)FlapsCommands::CLOSE);
+    }
+
+    std::size_t numBytesSerialized = 0;
+    if (msg.serialize(buf, sizeof(buf), numBytesSerialized))
+    {
+        characteristicRegistry.updateCharacteristic(UUIDs::UUID_CHEST_FLAPS_CHARACTERISTIC, buf, numBytesSerialized);
+    }
+    else
+    {
         // Error
     }
 }
@@ -331,4 +608,3 @@ void RightArmInputController::toggleLeftArmRocket()
         // Error
     }
 }
-
