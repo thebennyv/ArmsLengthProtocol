@@ -127,6 +127,11 @@ inline double easeOutCubic(double x)
     return 1.0 - pow(1.0 - x, 3.0);
 }
 
+inline double easeInOutLinear(double x)
+{
+    return x;
+}
+
 
 } // namespace Easing
 

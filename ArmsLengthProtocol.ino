@@ -18,7 +18,6 @@
 
 #include <Arduino.h>
 #include "ArmsLengthProtocol.h"
-#include "NullController.h"
 
 #define LIMB_HELMET 1
 #define LIMB_CHEST 2
@@ -28,8 +27,9 @@
 #define LIMB_RIGHT_LEG 6
 #define LIMB_LEFT_LEG 7
 
-#define LIMB LIMB_RIGHT_ARM
+//#define LIMB LIMB_RIGHT_ARM
 //#define LIMB LIMB_LEFT_ARM
+#define LIMB LIMB_HELMET
 
 #if LIMB == LIMB_RIGHT_ARM /* Pick a single limb to be the BLE server */
 #define IS_BLE_SERVER 1
@@ -55,24 +55,25 @@ typedef std::vector<IArduinoApplication*> Applications;
   #include "Helmet.h"
   BLEDeviceType bleDevice("Helmet");
   Helmet limb(bleDevice);
-  NullController controller(bleDevice);
-  Applications applications = {&bleDevice, &limb, &controller};
+  Applications applications = {&bleDevice, &limb};
 #elif LIMB == LIMB_CHEST
   #include "Chest.h"
   BLEDeviceType bleDevice("Chest");
   Chest limb(bleDevice);
-  NullController controller(bleDevice);
-  Applications applications = {&bleDevice, &limb, &controller};
+  Applications applications = {&bleDevice, &limb};
 #elif LIMB == LIMB_BACK
   #include "Back.h"
   BLEDeviceType bleDevice("Back");
   Back limb(bleDevice);
-  NullController controller(bleDevice);
-  Applications applications = {&bleDevice, &limb, &controller};
+  Applications applications = {&bleDevice, &limb};
 #elif LIMB == LIMB_RIGHT_ARM
   #include "RightArm.h"
   #include "RightArmInputController.h"
   #include "ArmsLengthScripts.h"
+  
+  // For installation instructions see: https://github.com/mathertel/OneButton
+  #include "lib/OneButton/src/OneButton.cpp"
+
   BLEDeviceType bleDevice("RightArm");
   RightArm limb(bleDevice);
   RightArmInputController controller(bleDevice);
@@ -80,22 +81,25 @@ typedef std::vector<IArduinoApplication*> Applications;
   Applications applications = {&bleDevice, &limb, &controller, &scripts};
 #elif LIMB == LIMB_LEFT_ARM
   #include "LeftArm.h"
-  BLEDeviceType bleDevice("XLeftArm");
+  #include "LeftArmInputController.h"
+  
+  // For installation instructions see: https://github.com/mathertel/OneButton
+  #include "lib/OneButton/src/OneButton.cpp"
+  
+  BLEDeviceType bleDevice("LeftArm");
   LeftArm limb(bleDevice);
-  NullController controller(bleDevice);
+  LeftArmInputController controller(bleDevice);
   Applications applications = {&bleDevice, &limb, &controller};
 #elif LIMB == LIMB_RIGHT_LEG
   #include "RightLeg.h"
   BLEDeviceType bleDevice("RightLeg");
   RightLeg limb(bleDevice);
-  NullController controller(bleDevice);
-  Applications applications = {&bleDevice, &limb, &controller};
+  Applications applications = {&bleDevice, &limb};
 #elif LIMB == LIMB_LEFT_LEG
 #include "LeftLeg.h"
   BLEDeviceType bleDevice("LeftLeg");
   LeftLeg limb(bleDevice);
-  NullController controller(bleDevice);
-  Applications applications = {&bleDevice, &limb, &controller};
+  Applications applications = {&bleDevice, &limb};
 #else
   #error "Please define a valid LIMB value"
 #endif
