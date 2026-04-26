@@ -244,12 +244,16 @@ ArmsLengthServer::MyServerCallbacks::MyServerCallbacks(
 
 void ArmsLengthServer::MyServerCallbacks::onConnect(BLEServer *pServer)
 {
+    Serial.println( F("Client connected") );
+
     pOwner->numConnectedClients++;
     pServer->startAdvertising();
 }
 
 void ArmsLengthServer::MyServerCallbacks::onDisconnect(BLEServer *pServer)
 {
+    Serial.println( F("Client disconnected") );
+    
     pOwner->numConnectedClients--;
     pServer->startAdvertising();
 }

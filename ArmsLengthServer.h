@@ -167,7 +167,6 @@ protected:
     };
     friend class MyServerCallbacks;
 
-
     int numConnectedClients;
 };
 
