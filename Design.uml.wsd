@@ -20,7 +20,9 @@ rnote over Consumer,Reg: Consumer is interested in this Characteristic, so it re
 rnote over Reg: Later, the registered Characteristic's value has changed
 
 alt Server
- -> Reg: LocalCharacteristicCallbacks::onWrite()
+ -> Reg: LocalCharacteristicCallbacks::onWrite(BLECharacteristic)
+Reg -> BLECharacteristic: notify()
+note over BLECharacteristic: Distributed via BLE
 else Client
  -> Reg: global::onRemoteNotification(BLERemoteCharacteristic)
 Reg -> Reg: RemoteCharacteristicNotifyCallback::onNotify()
@@ -31,3 +33,167 @@ Reg -> Consumer: onCharacteristicValueChanged(BLEUUID, data)
 rnote over Consumer,Reg: Consumer examines the UUID to identify the Characertistic that\nchanged, and handles the updated data value.
 
 @enduml
+
+
+
+@startuml
+
+component ArmsLengthSuit {
+    [HelmetApplication]
+    [ChestApplication]
+    [BackApplication]
+    [RightArmApplication]
+    [LeftArmApplication]
+    [RightLegApplication]
+    [LeftLegApplication]
+}
+
+@enduml
+
+@startuml
+
+BLECharacteristicRegistry <|-- ArmsLengthClient
+BLECharacteristicRegistry <|-- ArmsLengthServer
+
+IArduinoApplication <|-- ArmsLengthClient
+IArduinoApplication <|-- ArmsLengthServer
+IArduinoApplication <|-- Helmet
+IArduinoApplication <|-- Chest
+IArduinoApplication <|-- Back
+IArduinoApplication <|-- RightArm
+IArduinoApplication <|-- LeftArm
+IArduinoApplication <|-- RightLeg
+IArduinoApplication <|-- LeftLeg
+
+HelmetApplication *-- ArmsLengthClient
+HelmetApplication *-- Helmet
+
+ChestApplication *-- ArmsLengthClient
+ChestApplication *-- Chest
+
+BackApplication *-- ArmsLengthClient
+BackApplication *-- Back
+
+RightArmApplication *-- ArmsLengthServer
+RightArmApplication *-- RightArm
+
+LeftArmApplication *-- ArmsLengthClient
+LeftArmApplication *-- LeftArm
+
+RightLegApplication *-- ArmsLengthClient
+RightLegApplication *-- RightLeg
+
+LeftLegApplication *-- ArmsLengthClient
+LeftLegApplication *-- LeftLeg
+
+@enduml
+
+@startuml
+
+ArmsLengthClient --|> BLECharacteristicRegistry
+
+ArmsLengthClient --|> IArduinoApplication
+Helmet --|> IArduinoApplication
+
+Helmet o-- ArmsLengthClient
+
+HelmetApplication *-- ArmsLengthClient
+HelmetApplication *-- Helmet
+
+@enduml
+
+@startuml
+
+ArmsLengthClient --|> BLECharacteristicRegistry
+
+ArmsLengthClient --|> IArduinoApplication
+Chest --|> IArduinoApplication
+
+Chest o-- ArmsLengthClient
+
+ChestApplication *-- ArmsLengthClient
+ChestApplication *-- Chest
+
+@enduml
+
+@startuml
+
+ArmsLengthClient --|> BLECharacteristicRegistry
+
+ArmsLengthClient --|> IArduinoApplication
+Back --|> IArduinoApplication
+
+Back o-- ArmsLengthClient
+
+BackApplication *-- ArmsLengthClient
+BackApplication *-- Back
+
+@enduml
+
+@startuml
+
+ArmsLengthServer --|> BLECharacteristicRegistry
+
+ArmsLengthServer --|> IArduinoApplication
+RightArm --|> IArduinoApplication
+RightArmController --|> IArduinoApplication
+ArmsLengthScripts --|> IArduinoApplication
+
+RightArm o-- ArmsLengthServer
+RightArmController o-- ArmsLengthServer
+ArmsLengthScripts o-- ArmsLengthServer
+
+RightArmApplication *-- ArmsLengthServer
+RightArmApplication *-- RightArm
+RightArmApplication *-- RightArmController
+RightArmApplication *-- ArmsLengthScripts
+
+@enduml
+
+@startuml
+
+ArmsLengthClient --|> BLECharacteristicRegistry
+
+ArmsLengthClient --|> IArduinoApplication
+LeftArm --|> IArduinoApplication
+LeftArmController --|> IArduinoApplication
+
+LeftArm o-- ArmsLengthClient
+LeftArmController o-- ArmsLengthClient
+
+LeftArmApplication *-- ArmsLengthClient
+LeftArmApplication *-- LeftArm
+LeftArmApplication *-- LeftArmController
+
+@enduml
+
+@startuml
+
+ArmsLengthClient --|> BLECharacteristicRegistry
+
+ArmsLengthClient --|> IArduinoApplication
+RightLeg --|> IArduinoApplication
+
+RightLeg o-- ArmsLengthClient
+
+RightLegApplication *-- ArmsLengthClient
+RightLegApplication *-- RightLeg
+
+@enduml
+
+@startuml
+
+ArmsLengthClient --|> BLECharacteristicRegistry
+
+ArmsLengthClient --|> IArduinoApplication
+LeftLeg --|> IArduinoApplication
+
+LeftLeg o-- ArmsLengthClient
+
+LeftLegApplication *-- ArmsLengthClient
+LeftLegApplication *-- LeftLeg
+
+@enduml
+
+
+
