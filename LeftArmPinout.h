@@ -5,20 +5,19 @@
 
 enum class LeftArmPin_e
 {
-    ThumbButton = D0,
-    IndexFingerButton = D1,
-    MiddleFingerButton = D2,
-    RingFingerButton = D3,
-    PinkyFingerButton = D4,
-
-    // D5
     // D6 -- output only due to Serial?
-
-    RocketCoverServo = D7,
-    RocketArmServo = D8
-
-    // D9
-    // D10
+    
+    ThumbButton = D0,
+    //IndexFingerButton = D1,
+    //MiddleFingerButton = D2,
+    //RingFingerButton = D3,
+    RocketCoverServo = D4,
+    RocketArmServo = D5,
+    LaserMotor = D6,
+	// D7
+    Laser = D8,
+    RepulsorNeoPixel = D9,
+    FlexSensor = A10
 };
 
 #endif // LEFTARMPINOUT_H

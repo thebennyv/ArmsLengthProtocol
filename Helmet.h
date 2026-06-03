@@ -6,6 +6,9 @@
 #include "BLECharacteristicRegistry.h"
 #include "ESP32Servo.h"
 
+// #include <ESP32ServoController.h>
+// using namespace MDO::ESP32ServoController;
+
 class Helmet :
     public IArduinoApplication
 {
@@ -25,12 +28,26 @@ public:
         bool isNotify
         );
 
+
+// class MyServoController: public ServoController {
+	
+// 	public:
+// 		std::shared_ptr<LedcTimer>		getTimerPlease() const
+//         {
+//             return ServoController::getTimer();
+//         }
+// };
+
 private:
 
     BLECharacteristicRegistry& characteristicRegistry;
 
     ArmsLengthMessageHandler msgHandler;
 
+    // BestAvailableFactory oTimerChannelFactory;
+	// ServoFactoryDecorator oFactoryDecorator;
+
+    // MyServoController faceplateServo1a;
     Servo faceplateServo1;
     Servo faceplateServo2;
     const int faceplateServo1Pin;
@@ -39,10 +56,10 @@ private:
     void detachFaceplateServos();
     enum class FaceplateServoAngles_e
     {
-        servo1Min = 20, // todo polarity and iron man servo says 20-160
-        servo1Max = 160, // todo polarity
-        servo2Min = 160, // todo polarity
-        servo2Max = 20 // todo polarity
+        servo1Min = 0, // todo polarity and iron man servo says 20-160
+        servo1Max = 125, // todo polarity
+        servo2Min = 90, // todo polarity
+        servo2Max = 180  // todo polarity
     };
     double scaleFaceplateServo1Angle(double norm_angle /* 0.0 to 1.0 */);
     double scaleFaceplateServo2Angle(double norm_angle /* 0.0 to 1.0 */);
@@ -51,11 +68,11 @@ private:
     enum class FaceplateStateDurations_e
     {
         
-        DurationOpening       = 1000, // 1.0 seconds to open
+        DurationOpening       = 500, // 1.0 seconds to open
         DurationHoldingOpen   =  250, // then briefly hold open
         
-        DurationClosing       = 1000, // 1.0 seconds to close
-        DurationHoldingClosed =  250  // then briefly hold closed
+        DurationClosing       = 500, // 1.0 seconds to close
+        DurationHoldingClosed =  300  // then briefly hold closed
     };
 
     enum class FaceplateState_e
@@ -73,6 +90,7 @@ private:
 
     void loopFaceplate();
     void loopEyes();
+    void loopAudio();
 
 protected:
 };

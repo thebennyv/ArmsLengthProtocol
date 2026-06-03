@@ -27,12 +27,13 @@ ArmsLengthServer::ArmsLengthServer(
 
     pEyesCharacteristic(nullptr),
     pFaceplateCharacteristic(nullptr),
-    pSpeechCharacteristic(nullptr),
+    pAudioCharacteristic(nullptr),
 
     pArcReactorCharacteristic(nullptr),
     pChestFlapsCharacteristic(nullptr),
 
     pBackFlapsCharacteristic(nullptr),
+    pShoulderFlapsCharacteristic(nullptr),
 
     pRightArmLaserCharacteristic(nullptr),
     pRightArmRocketCharacteristic(nullptr),
@@ -110,8 +111,8 @@ void ArmsLengthServer::setup()
         BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE |
         BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_INDICATE
         );
-    pSpeechCharacteristic = pHelmetService->createCharacteristic(
-        UUIDs::UUID_SPEECH_CHARACTERISTIC,
+    pAudioCharacteristic = pHelmetService->createCharacteristic(
+        UUIDs::UUID_AUDIO_CHARACTERISTIC,
         BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE |
         BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_INDICATE
         );
@@ -131,6 +132,11 @@ void ArmsLengthServer::setup()
     // Back Service Characteristics
     pBackFlapsCharacteristic = pBackService->createCharacteristic(
         UUIDs::UUID_BACK_FLAPS_CHARACTERISTIC,
+        BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE |
+        BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_INDICATE
+        );
+    pShoulderFlapsCharacteristic = pBackService->createCharacteristic(
+        UUIDs::UUID_SHOULDER_FLAPS_CHARACTERISTIC,
         BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE |
         BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_INDICATE
         );
@@ -201,10 +207,11 @@ void ArmsLengthServer::setup()
     registerCharacteristic(pFlapsTestScriptCharacteristic);
     registerCharacteristic(pEyesCharacteristic);
     registerCharacteristic(pFaceplateCharacteristic);
-    registerCharacteristic(pSpeechCharacteristic);
+    registerCharacteristic(pAudioCharacteristic);
     registerCharacteristic(pArcReactorCharacteristic);
     registerCharacteristic(pChestFlapsCharacteristic);
     registerCharacteristic(pBackFlapsCharacteristic);
+    registerCharacteristic(pShoulderFlapsCharacteristic);
     registerCharacteristic(pRightArmLaserCharacteristic);
     registerCharacteristic(pRightArmRocketCharacteristic);
     registerCharacteristic(pRightArmRepulsorCharacteristic);

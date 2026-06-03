@@ -17,13 +17,13 @@
 
 /*static*/ const BLEUUID UUIDs::UUID_EYES_CHARACTERISTIC     ("7d555942-4d5b-4de7-8f24-cae5c0853d6c");
 /*static*/ const BLEUUID UUIDs::UUID_FACEPLATE_CHARACTERISTIC("3eba6a68-92d6-4a21-82c1-e12ce4365d9b");
-/*static*/ const BLEUUID UUIDs::UUID_SPEECH_CHARACTERISTIC   ("650cf97a-ac8c-4362-8c27-62866d44ab90");
 
+/*static*/ const BLEUUID UUIDs::UUID_AUDIO_CHARACTERISTIC   ("650cf97a-ac8c-4362-8c27-62866d44ab90");
 /*static*/ const BLEUUID UUIDs::UUID_ARC_REACTOR_CHARACTERISTIC("0ecf42f0-e25e-4402-b240-366ab1fc8988");
 /*static*/ const BLEUUID UUIDs::UUID_CHEST_FLAPS_CHARACTERISTIC("3c652f8d-86cf-4b82-b282-54e01766b13e");
 
 /*static*/ const BLEUUID UUIDs::UUID_BACK_FLAPS_CHARACTERISTIC("ce0be930-1c54-49fc-82f5-33976d4ff31a");
-/*static*/ const BLEUUID UUIDs::UUID_SHOULDER_FLAPS_CHARACTERISTIC("ce0be930-1c54-49fc-82f5-33976d4ff31a");
+/*static*/ const BLEUUID UUIDs::UUID_SHOULDER_FLAPS_CHARACTERISTIC("48ed2108-0353-4273-ad66-8fe4b060fa6f");
 
 /*static*/ const BLEUUID UUIDs::UUID_RIGHT_ARM_LASER_CHARACTERISTIC   ("fd4bac79-5f87-4d82-b5e3-938f85fc2f79");
 /*static*/ const BLEUUID UUIDs::UUID_RIGHT_ARM_ROCKET_CHARACTERISTIC  ("d94a19ce-b78e-4fa4-82aa-186adba180ff");
@@ -56,12 +56,13 @@
     
     if (uuid == UUID_EYES_CHARACTERISTIC) return "Eyes";
     if (uuid == UUID_FACEPLATE_CHARACTERISTIC) return "Faceplate";
-    if (uuid == UUID_SPEECH_CHARACTERISTIC) return "Speech";
+    if (uuid == UUID_AUDIO_CHARACTERISTIC) return "Audio";
 
     if (uuid == UUID_ARC_REACTOR_CHARACTERISTIC) return "Arc Reactor";
     if (uuid == UUID_CHEST_FLAPS_CHARACTERISTIC) return "Chest Flaps";
 
     if (uuid == UUID_BACK_FLAPS_CHARACTERISTIC) return "Back Flaps";
+    if (uuid == UUID_BACK_FLAPS_CHARACTERISTIC) return "Shoulder Flaps";
 
     if (uuid == UUID_RIGHT_ARM_LASER_CHARACTERISTIC) return "Right Arm Laser";
     if (uuid == UUID_RIGHT_ARM_ROCKET_CHARACTERISTIC) return "Right Arm Rocket";
@@ -80,7 +81,6 @@
 
 // https://www.UUIDgenerator.com/
 // Spare UUIDs for future use:
-// "48ed2108-0353-4273-ad66-8fe4b060fa6f"
 // "b241f952-713e-42c5-81f9-89adb4722d99"
 // "9d10d39b-0801-47b7-a58e-13412ca8a1cb"
 // "9d725834-cb1e-483f-8027-5d73686079b5"

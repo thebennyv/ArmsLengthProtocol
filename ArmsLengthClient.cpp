@@ -78,7 +78,7 @@ ArmsLengthClient::MyAdvertisedDeviceCallbacks::MyAdvertisedDeviceCallbacks(
 
 void ArmsLengthClient::MyAdvertisedDeviceCallbacks::onResult(BLEAdvertisedDevice advertisedDevice)
 {
-    Serial.println("advertisedDevice '" + advertisedDevice.getName() + "'");
+//    Serial.println("advertisedDevice '" + advertisedDevice.getName() + "'");
 
     // Could instead query it for a specific service UUID, but this is generic
     // and positions us to have multiple numbered servers (multiple suit instances).

@@ -10,7 +10,8 @@ class LeftArmInputController:
 public:
 
     typedef int NumberOfPresses;
-    static const NumberOfPresses LONGPRESS = -2;
+    static const NumberOfPresses LONGPRESS_START = -2;
+    static const NumberOfPresses LONGPRESS_STOP = -3;
 
     struct AttachedButton
     {
@@ -23,6 +24,7 @@ public:
             pin(-1),
             button()
         {
+            button.setPressTicks(200);
         }
 
         AttachedButton(
@@ -35,6 +37,7 @@ public:
             pin(pin),
             button(pin, activeLow, pullupActive)
         {
+            button.setPressTicks(200);
         }
     };
 
@@ -53,12 +56,13 @@ private:
 protected:
 
     AttachedButton thumb; // Side of index finger
-    AttachedButton indexFinger; // Tip of index finger
-    AttachedButton middleFinger; // Tip of middle finger
-    AttachedButton ringFinger; // Tip of ring finger
-    AttachedButton pinkyFinger; // Tip of pinky finger
 
-    void toggleRightArmRocket();
+    int flexSensorWatermarkOn;
+    int flexSensorWatermarkOff;
+    bool flexSenorTriggered;
+
+    void leftArmLaser(LaserCommands command);
+    void leftArmRepulsor(RepulsorCommands command);
     void toggleLeftArmRocket();
 
 };

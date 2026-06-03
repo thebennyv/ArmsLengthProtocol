@@ -27,7 +27,7 @@ enum class Characteristics
     // Helmet Service Characteristics
     EYES_CHARACTERISTIC = 5,
     FACEPLATE_CHARACTERISTIC = 6,
-    SPEECH_CHARACTERISTIC = 7,
+    AUDIO_CHARACTERISTIC = 7,
     
     // Chest Service Characteristics
     ARC_REACTOR_CHARACTERISTIC = 8,
@@ -73,7 +73,7 @@ enum class FaceplateCommands
     CLOSE = 1
 };
 
-enum class SpeechCommands
+enum class AudioCommands
 {
     STAND_DOWN = 0,
     GENIUS_BILLIONAIRE = 1,
@@ -81,7 +81,12 @@ enum class SpeechCommands
     NOTHING_WITHOUT_THIS_SUIT = 3,
     DOTH_MOTHER_KNOW = 4,
     BUILT_THIS_IN_A_CAVE = 5,
-    PLAYING_GALAGA = 6
+    PLAYING_GALAGA = 6,
+    REPULSOR_CHARGE = 7,
+    REPULSOR_FIRE = 8,
+    UNIBEAM_CHARGE = 9,
+    UNIBEAM_CHARGE_AND_FIRE = 10,
+    CLANG = 11
 };
     
 enum class ArcReactorCommands
@@ -94,7 +99,8 @@ enum class ArcReactorCommands
     PARTY = 5,
     FLICKER_ON = 6,
     FLICKER_OFF = 7,
-    UNIBEAM = 8
+    UNIBEAM = 8,
+    ACTIVE_SPIN = 9
 };
 
 enum class FlapsCommands

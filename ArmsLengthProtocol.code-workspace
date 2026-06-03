@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../../AppData/Local/Arduino15/packages/esp32/hardware/esp32/3.3.7/libraries/BLE/src"
+		}
+	],
+	"settings": {}
+}

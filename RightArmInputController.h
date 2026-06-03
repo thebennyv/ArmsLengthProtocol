@@ -10,7 +10,8 @@ class RightArmInputController:
 public:
 
     typedef int NumberOfPresses;
-    static const NumberOfPresses LONGPRESS = -2;
+    static const NumberOfPresses LONGPRESS_START = -2;
+    static const NumberOfPresses LONGPRESS_STOP = -3;
 
     struct AttachedButton
     {
@@ -23,6 +24,7 @@ public:
             pin(-1),
             button()
         {
+            button.setPressTicks(500);
         }
 
         AttachedButton(
@@ -35,6 +37,7 @@ public:
             pin(pin),
             button(pin, activeLow, pullupActive)
         {
+            button.setPressTicks(500);
         }
     };
 
@@ -56,19 +59,23 @@ protected:
     AttachedButton indexFinger; // Tip of index finger
     AttachedButton middleFinger; // Tip of middle finger
     AttachedButton ringFinger; // Tip of ring finger
-    AttachedButton pinkyFinger; // Tip of pinky finger
 
+    int flexSensorWatermarkOn;
+    int flexSensorWatermarkOff;
+    bool flexSenorTriggered;
+
+    void rightArmLaser(LaserCommands command);
+    void rightArmRepulsor(RepulsorCommands command);
     void toggleRightArmRocket();
     void dimEyes();
     void toggleFaceplate();
     void toggleEyes();
     void resetReactor();
+    void unibeam();
     void toggleShoulderFlaps();
     void toggleAllBackFlaps();
     void partyMode();
     void toggleChestFlaps();
-
-    void toggleLeftArmRocket();
 
 };
 

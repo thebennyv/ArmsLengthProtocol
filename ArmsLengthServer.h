@@ -55,7 +55,7 @@ protected:
 //     - Faceplate Characteristic
 //        > Close
 //        > Open
-//     - Speech Characteristic
+//     - Audio Characteristic
 //        > Stand Down
 //        > Genius billionaire playboy philanthropist
 //        > I am Iron Man
@@ -134,12 +134,13 @@ protected:
 
     BLECharacteristic* pEyesCharacteristic;
     BLECharacteristic* pFaceplateCharacteristic;
-    BLECharacteristic* pSpeechCharacteristic;
+    BLECharacteristic* pAudioCharacteristic;
 
     BLECharacteristic* pArcReactorCharacteristic;
     BLECharacteristic* pChestFlapsCharacteristic;
 
     BLECharacteristic* pBackFlapsCharacteristic;
+    BLECharacteristic* pShoulderFlapsCharacteristic;
 
     BLECharacteristic* pRightArmLaserCharacteristic;
     BLECharacteristic* pRightArmRocketCharacteristic;

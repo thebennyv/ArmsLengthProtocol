@@ -2,7 +2,9 @@
 #define BACK_H
 
 #include "IArduinoApplication.h"
+#include "ArmsLengthMessageHandler.h"
 #include "BLECharacteristicRegistry.h"
+#include "ESP32Servo.h"
 
 class Back :
     public IArduinoApplication
@@ -26,6 +28,117 @@ public:
 private:
 
     BLECharacteristicRegistry& characteristicRegistry;
+
+    ArmsLengthMessageHandler msgHandler;
+
+    Servo leftShoulderFlap;
+    Servo rightShoulderFlap;
+    Servo leftVerticalFlap;
+    Servo rightVerticalFlap;
+    Servo leftHorizontalFlap;
+    Servo rightHorizontalFlap;
+
+    void attachShoulderFlaps();
+    void attachVerticalFlaps();
+    void attachHorizontalFlaps();
+    void detachShoulderFlaps();
+    void detachVerticalFlaps();
+    void detachHorizontalFlaps();
+
+    enum class LeftShoulderFlapAngles_e
+    {
+        Min = 0, // todo
+        Max = 180 // todo
+    };
+
+    enum class RightShoulderFlapAngles_e
+    {
+        Min = 0, // todo
+        Max = 180 // todo
+    };
+
+    enum class LeftVerticalFlapAngles_e
+    {
+        Min = 0, // todo
+        Max = 180 // todo
+    };
+
+    enum class RightVerticalFlapAngles_e
+    {
+        Min = 0, // todo
+        Max = 180 // todo
+    };
+
+    enum class LeftHorizontalFlapAngles_e
+    {
+        Min = 0, // todo
+        Max = 180 // todo
+    };
+
+    enum class RightHorizontalFlapAngles_e
+    {
+        Min = 0, // todo
+        Max = 180 // todo
+    };
+
+    // All durations are in milliseconds
+    enum class StateDurations_e
+    {
+        DurationOpeningShoulderFlaps = 1000,
+        DurationHoldingShoulderFlapsOpen = 250,
+        DurationClosingShoulderFlaps = 1000,
+        DurationHoldingShoulderFlapsClosed = 250,
+
+        DurationOpeningVerticalFlaps = 1000,
+        DurationHoldingVerticalFlapsOpen = 250,
+        DurationOpeningHorizontalFlaps = 1000,
+        DurationHoldingHorizontalFlapsOpen = 250,
+        DurationClosingHorizontalFlaps = 1000,
+        DurationHoldingHorizontalFlapsClosed = 250,
+        DurationClosingVerticalFlaps = 1000,
+        DurationHoldingVerticalFlapsClosed = 250
+    };
+
+    enum class ShoulderFlapsState_e
+    {
+        Closed,
+        Opening,
+        HoldingOpen,
+        Opened,
+        Closing,
+        HoldingClosed
+    };
+    ShoulderFlapsState_e shoulderFlapsState;
+    unsigned long shoulderFlapsState_t0;
+    unsigned long shoulderFlapsState_tNextAction;
+    void changeShoulderFlapsState(
+        ShoulderFlapsState_e newState,
+        unsigned long tNextAction = 0
+        );
+
+    enum class BackFlapsState_e
+    {
+        Closed,
+        OpeningVerticalFlaps,
+        HoldingVerticalFlapsOpen,
+        OpeningHorizontalFlaps,
+        HoldingHorizontalFlapsOpen,
+        Opened,
+        ClosingHorizontalFlaps,
+        HoldingHorizontalFlapsClosed,
+        ClosingVerticalFlaps,
+        HoldingVerticalFlapsClosed
+    };
+    BackFlapsState_e backFlapsState;
+    unsigned long backFlapsState_t0;
+    unsigned long backFlapsState_tNextAction;
+    void changeBackFlapsState(
+        BackFlapsState_e newState,
+        unsigned long tNextAction = 0
+        );
+
+    void loopShoulderFlaps();
+    void loopBackFlaps();
 
 protected:
 };

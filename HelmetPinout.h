@@ -5,16 +5,18 @@
 
 enum class HelmetPin_e
 {
-    // D0
+    FacePlateEyes = D8,
+    
     // D1
     // D2
     // D3
     // D4
-    // D5
-    // D6 -- output only due to Serial?
+    // AudioPlayerBusy = D5,
+    // AudioPlayerTx = D2,
+    // AudioPlayerRx = D3,
 
-    FaceplateServo1 = D7,
-    FaceplateServo2 = D8
+    FaceplateServo1 = D1,
+    FaceplateServo2 = D2
 
     // D9
     // D10
