@@ -18,7 +18,7 @@ bool ArmsLengthMessageHandler::receiveUniqueMessage(
     uint8_t* bufferToDeserialize,
     std::size_t bufferSize)
 {
-    Serial.print( F("ArmsLengthMessageHandler receiveUniqueMessage bufferSize ") );
+    //Serial.print( F("ArmsLengthMessageHandler receiveUniqueMessage bufferSize ") );
     Serial.println(bufferSize);
 
     if (!msgOut.deserialize(bufferToDeserialize, bufferSize))
@@ -47,8 +47,8 @@ bool ArmsLengthMessageHandler::SequenceNumberHistory::append(uint32_t sequenceNu
     {
         if (history[i] == sequenceNumber)
         {
-        Serial.print( F("SequenceNumberHistory found ") );
-        Serial.println(sequenceNumber);
+        //Serial.print( F("SequenceNumberHistory found ") );
+        //Serial.println(sequenceNumber);
             // Found it in the recent history, so reject it.
             return false;
         }

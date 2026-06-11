@@ -149,7 +149,7 @@ void BLECharacteristicRegistry::RemoteCharacteristicNotifyCallback::onNotify(
     size_t length,
     bool isNotify)
 {
-    Serial.println( "onNotify for " + characteristic->getUUID().toString() );
+    //Serial.println( "onNotify for " + characteristic->getUUID().toString() );
     m_notifyCallback(characteristic, data, length, isNotify); // calls dispatchCharacteristicNotification below
 }
 void BLECharacteristicRegistry::dispatchCharacteristicNotification(
@@ -255,8 +255,8 @@ void BLECharacteristicRegistry::attachValueChangedCallback(valueChanged_callback
 
 void BLECharacteristicRegistry::updateCharacteristic(BLEUUID characteristicUUID, uint8_t* pData, size_t length)
 {
-    Serial.print( F("BLECharacteristicRegistry::updateCharacteristic length ") );
-    Serial.println(length);
+    //Serial.print( F("BLECharacteristicRegistry::updateCharacteristic length ") );
+    //Serial.println(length);
 
     int numLocals = 0;
     int numRemotes = 0;
@@ -316,8 +316,8 @@ void BLECharacteristicRegistry::valueChanged(
     // Call out to event consumers to handle the updated value.
     for (auto& callback : m_valueChangedCallbacks)
     {
-    Serial.print( F("BLECharacteristicRegistry::valueChanged length ") );
-    Serial.println(length);
+    //Serial.print( F("BLECharacteristicRegistry::valueChanged length ") );
+    //Serial.println(length);
 
         callback(characteristicUUID, pData, length, isNotify);
     }

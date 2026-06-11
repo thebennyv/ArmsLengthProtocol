@@ -47,47 +47,59 @@ private:
 
     enum class LeftShoulderFlapAngles_e
     {
-        Min = 0, // todo
-        Max = 180 // todo
+        Min = 180-80,
+        Max = 180
     };
 
     enum class RightShoulderFlapAngles_e
     {
-        Min = 0, // todo
-        Max = 180 // todo
+        Min = 180,
+        Max = 180-80 // todo adjust with new arm
     };
+
+
+
+
+
+
+
+
+enum {adjustVericals = 70};
 
     enum class LeftVerticalFlapAngles_e
     {
-        Min = 0, // todo
-        Max = 180 // todo
+        Min = 180-130, // 50-90
+        Max = 180-90+50 // open
     };
 
     enum class RightVerticalFlapAngles_e
     {
-        Min = 0, // todo
-        Max = 180 // todo
+        Min = 0+140, // 140-100
+        Max = 0+100-50 //  open
     };
+
+
+
 
     enum class LeftHorizontalFlapAngles_e
     {
-        Min = 0, // todo
-        Max = 180 // todo
+        Min = 80, // todo
+        Max = 110 // todo
     };
 
     enum class RightHorizontalFlapAngles_e
     {
-        Min = 0, // todo
-        Max = 180 // todo
+        Min = 80, // todo
+        Max = 110 // todo
     };
 
     // All durations are in milliseconds
     enum class StateDurations_e
     {
-        DurationOpeningShoulderFlaps = 1000,
-        DurationHoldingShoulderFlapsOpen = 250,
-        DurationClosingShoulderFlaps = 1000,
-        DurationHoldingShoulderFlapsClosed = 250,
+        DurationOpeningShoulderFlaps = 500,
+        DurationHoldingShoulderFlapsOpen = 150,
+        DurationClosingShoulderFlaps = 500,
+        DurationHoldingShoulderFlapsClosed = 150,
 
         DurationOpeningVerticalFlaps = 1000,
         DurationHoldingVerticalFlapsOpen = 250,

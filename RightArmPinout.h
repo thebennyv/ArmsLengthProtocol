@@ -12,12 +12,12 @@ enum class RightArmPin_e
     MiddleFingerButton = D2,
     RingFingerButton = D3,
     RocketCoverServo = D4,
-    RocketArmServo = D5,
-    LaserMotor = D6,
+    RocketArmServo = D6,
+    LaserMotor = D5,
 	// D7
     Laser = D8,
     RepulsorNeoPixel = D9,
-    FlexSensor = A10
+    FlexSensor = D10 //A10
 };
 
 #endif // RIGHTARMPINOUT_H

@@ -126,13 +126,13 @@ private:
     void detachFlaps();
     enum class LeftFlapAngles_e
     {
-        Min = 0, // todo
-        Max = 180 // todo
+        Min = 90, // todo
+        Max = 10 // todo
     };
     enum class RightFlapAngles_e
     {
-        Min = 180, // todo
-        Max = 0 // todo
+        Min = 10, // todo
+        Max = 90 // todo
     };
 
     // All durations are in milliseconds

@@ -68,10 +68,10 @@ bool ArmsLengthProtocolMessage::serialize(
     const size_t requiredSize = sizeof(m_sequenceNumber) + sizeof(m_service) + sizeof(m_characteristic) + sizeof(m_command);
     if (bufferSize < requiredSize)
     {
-    Serial.print( F("ArmsLengthProtocolMessage::serialize bufferSize < requiredSize ") );
-    Serial.print(bufferSize);
-    Serial.print(" vs ");
-    Serial.println(requiredSize);
+//    Serial.print( F("ArmsLengthProtocolMessage::serialize bufferSize < requiredSize ") );
+//    Serial.print(bufferSize);
+//    Serial.print(" vs ");
+//    Serial.println(requiredSize);
 
         bytesWritten = 0;
         return false;
@@ -109,17 +109,17 @@ bool ArmsLengthProtocolMessage::deserialize(
 {
     const size_t requiredSize = sizeof(m_sequenceNumber) + sizeof(m_service) + sizeof(m_characteristic) + sizeof(m_command);
 
-    Serial.print( F("ArmsLengthProtocolMessage::deserialize ") );
-    Serial.print(bufferSize);
-    Serial.print(" vs ");
-    Serial.println(requiredSize);
+    // Serial.print( F("ArmsLengthProtocolMessage::deserialize ") );
+    // Serial.print(bufferSize);
+    // Serial.print(" vs ");
+    // Serial.println(requiredSize);
 
     if (bufferSize < requiredSize)
     {
-    Serial.print( F("ArmsLengthProtocolMessage::deserialize bufferSize < requiredSize ") );
-    Serial.print(bufferSize);
-    Serial.print(" vs ");
-    Serial.println(requiredSize);
+    // Serial.print( F("ArmsLengthProtocolMessage::deserialize bufferSize < requiredSize ") );
+    // Serial.print(bufferSize);
+    // Serial.print(" vs ");
+    // Serial.println(requiredSize);
 
         return false;
     }
@@ -144,8 +144,8 @@ bool ArmsLengthProtocolMessage::deserialize(
     m_command = fromBigEndian<uint32_t>(tempU32);
     offset += sizeof(tempU32);
 
-    Serial.print( F("ArmsLengthProtocolMessage::deserialize offset = ") );
-    Serial.println(offset);
+    // Serial.print( F("ArmsLengthProtocolMessage::deserialize offset = ") );
+    // Serial.println(offset);
 
     return true;
 }

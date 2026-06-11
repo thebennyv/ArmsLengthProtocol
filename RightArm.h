@@ -103,8 +103,8 @@ private:
     // All durations are in milliseconds
     enum class LaserStateDurations_e
     {
-        DurationOpening = 220,
-        DurationClosing = 150
+        DurationOpening = 220*10*2,
+        DurationClosing = 150*10
     };
 
     enum class LaserState_e

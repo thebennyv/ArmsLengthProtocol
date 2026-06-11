@@ -636,10 +636,12 @@ void Chest::onValueChanged(
             switch ((FlapsCommands)msg.getCommand())
             {
             case FlapsCommands::CLOSE:
+    Serial.println( F("Close flaps") );
                 changeFlapsState(FlapsState_e::Closing);
                 break;
 
             case FlapsCommands::OPEN:
+    Serial.println( F("Open flaps") );
                 changeFlapsState(FlapsState_e::Opening);
                 break;
 

@@ -30,9 +30,9 @@
 #define LIMB_RIGHT_LEG 6
 #define LIMB_LEFT_LEG 7
 
-//#define LIMB LIMB_HELMET
+#define LIMB LIMB_HELMET
 //#define LIMB LIMB_CHEST
-#define LIMB LIMB_BACK
+//#define LIMB LIMB_BACK
 //#define LIMB LIMB_RIGHT_ARM
 //#define LIMB LIMB_LEFT_ARM
 //#define LIMB LIMB_RIGHT_LEG

@@ -1,0 +1,7 @@
+.vscode/
+audio/
+out/
+reference code/
+ArmsLengthProtocol.code-workspace
+.DS_Store
+MemoryUse.xls

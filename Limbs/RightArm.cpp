@@ -51,6 +51,7 @@ void RightArm::setup()
     pinMode((int)RightArmPin_e::LaserMotor, OUTPUT);
     pinMode((int)RightArmPin_e::Laser, OUTPUT);
     digitalWrite((int)RightArmPin_e::Laser, HIGH); // off
+//    digitalWrite((int)RightArmPin_e::Laser, LOW); // on
 
 	//ESP32PWM::allocateTimer(0);
 	ESP32PWM::allocateTimer(1);
@@ -60,11 +61,11 @@ void RightArm::setup()
 	// using default min/max of 1000us and 2000us
 	// different servos may require different min/max settings
 	// for an accurate 0 to 180 sweep
-	rocketCover.setPeriodHertz(50); // standard 50 hz servo
-	rocketCover.attach(rocketCoverServoPin, 500, 2500);
+	// rocketCover.setPeriodHertz(50); // standard 50 hz servo
+	// rocketCover.attach(rocketCoverServoPin, 500, 2500);
 
-	rocketArm.setPeriodHertz(50); // standard 50 hz servo
-	rocketArm.attach(rocketArmServoPin, 500, 2500);
+	// rocketArm.setPeriodHertz(50); // standard 50 hz servo
+	// rocketArm.attach(rocketArmServoPin, 500, 2500);
 
 	laserMotor.setPeriodHertz(50); // standard 50 hz servo
 	laserMotor.attach(laserMotorPin, 500, 2500);
@@ -87,10 +88,10 @@ void RightArm::loop()
 
 void RightArm::attachRocketCover()
 {
-    if (!rocketCover.attached())
-    {
-        rocketCover.attach(rocketCoverServoPin);
-    }
+    // if (!rocketCover.attached())
+    // {
+    //     rocketCover.attach(rocketCoverServoPin);
+    // }
 }
 
 void RightArm::detachRocketCover()
@@ -103,10 +104,10 @@ void RightArm::detachRocketCover()
 
 void RightArm::attachRocketArm()
 {
-    if (!rocketArm.attached())
-    {
-        rocketArm.attach(rocketArmServoPin);
-    }
+    // if (!rocketArm.attached())
+    // {
+    //     rocketArm.attach(rocketArmServoPin);
+    // }
 }
 
 void RightArm::detachRocketArm()

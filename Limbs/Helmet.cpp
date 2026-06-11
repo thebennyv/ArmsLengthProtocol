@@ -405,6 +405,32 @@ void Helmet::onValueChanged(
     if (characteristicUUID.equals(UUIDs::UUID_EYES_CHARACTERISTIC))
     {
         // Handle Eyes Characteristic update
+    Serial.println( F("Helmet handling UUID_EYES_CHARACTERISTIC") );
+
+        // Handle Eyes Characteristic update
+        ArmsLengthProtocolMessage msg;
+        if (msgHandler.receiveUniqueMessage(msg, pData, length))
+        {
+            switch ((EyesCommands)msg.getCommand())
+            {
+            case EyesCommands::OFF:
+                digitalWrite(LED_BUILTIN, HIGH);  // turn the LED OFF (active low)
+                break;
+
+            case EyesCommands::ON:
+                digitalWrite(LED_BUILTIN, LOW);  // turn the LED ON (active low)
+                break;
+
+            default:
+    Serial.println( F("Helmet unknown eyes command") );
+                // Error
+                break;
+            }
+        }
+        else
+        {
+            Serial.print( F("Helmet::onValueChanged receiveUniqueMessage failed") );
+        }
     }
     else if (characteristicUUID.equals(UUIDs::UUID_FACEPLATE_CHARACTERISTIC))
     {

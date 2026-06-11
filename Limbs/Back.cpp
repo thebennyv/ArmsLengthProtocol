@@ -75,21 +75,24 @@ void Back::setup()
 	rightVerticalFlap.setPeriodHertz(50); // standard 50 hz servo
 	rightVerticalFlap.attach((int)BackPin_e::RightVerticalFlap, 500, 2500);
 
-	leftHorizontalFlap.setPeriodHertz(50); // standard 50 hz servo
-	leftHorizontalFlap.attach((int)BackPin_e::LeftHorizontalFlap, 500, 2500);
+	// leftHorizontalFlap.setPeriodHertz(50); // standard 50 hz servo
+	// leftHorizontalFlap.attach((int)BackPin_e::LeftHorizontalFlap, 500, 2500);
 
-	rightHorizontalFlap.setPeriodHertz(50); // standard 50 hz servo
-	rightHorizontalFlap.attach((int)BackPin_e::RightHorizontalFlap, 500, 2500);
+	// rightHorizontalFlap.setPeriodHertz(50); // standard 50 hz servo
+	// rightHorizontalFlap.attach((int)BackPin_e::RightHorizontalFlap, 500, 2500);
 
     changeBackFlapsState(
-        BackFlapsState_e::ClosingHorizontalFlaps
+        //BackFlapsState_e::ClosingHorizontalFlaps,
+        BackFlapsState_e::ClosingVerticalFlaps,
+        5000
         );
 
     changeShoulderFlapsState(
         ShoulderFlapsState_e::Closing,
         // After the back flaps have (hopefully) closed
-        (int)StateDurations_e::DurationClosingHorizontalFlaps +
-        (int)StateDurations_e::DurationHoldingHorizontalFlapsClosed +
+        5000 +
+        // (int)StateDurations_e::DurationClosingHorizontalFlaps +
+        // (int)StateDurations_e::DurationHoldingHorizontalFlapsClosed +
         (int)StateDurations_e::DurationClosingVerticalFlaps +
         (int)StateDurations_e::DurationHoldingVerticalFlapsClosed
         );
@@ -120,14 +123,14 @@ void Back::attachVerticalFlaps()
 }
 void Back::attachHorizontalFlaps()
 {
-    if (!leftHorizontalFlap.attached())
-    {
-        leftHorizontalFlap.attach((int)BackPin_e::LeftHorizontalFlap);
-    }
-    if (!rightHorizontalFlap.attached())
-    {
-        rightHorizontalFlap.attach((int)BackPin_e::RightHorizontalFlap);
-    }
+    // if (!leftHorizontalFlap.attached())
+    // {
+    //     leftHorizontalFlap.attach((int)BackPin_e::LeftHorizontalFlap);
+    // }
+    // if (!rightHorizontalFlap.attached())
+    // {
+    //     rightHorizontalFlap.attach((int)BackPin_e::RightHorizontalFlap);
+    // }
 }
 void Back::detachShoulderFlaps()
 {
@@ -168,8 +171,8 @@ void Back::changeShoulderFlapsState(
     unsigned long tNextAction)
 {
     shoulderFlapsState = newState;
-    shoulderFlapsState_t0 = millis();
-    shoulderFlapsState_tNextAction = shoulderFlapsState_t0 + tNextAction;
+    shoulderFlapsState_t0 = millis() + tNextAction;
+    shoulderFlapsState_tNextAction = shoulderFlapsState_t0;
 }
 
 void Back::changeBackFlapsState(
@@ -177,8 +180,8 @@ void Back::changeBackFlapsState(
     unsigned long tNextAction)
 {
     backFlapsState = newState;
-    backFlapsState_t0 = millis();
-    backFlapsState_tNextAction = backFlapsState_t0 + tNextAction;
+    backFlapsState_t0 = millis() + tNextAction;
+    backFlapsState_tNextAction = backFlapsState_t0;
 }
 
 void Back::loop()
@@ -192,14 +195,14 @@ void Back::loopShoulderFlaps()
     // Sample the current time once per loop to maintain consistent behavior
     // within this iteration. Two back to back calls to millis() could return
     // different values if we're at a millisecond boundary.
-    const unsigned long currentTime = millis();
+    const long currentTime = millis();
 
     // dt = delta T = change in time since we started processing a state.
     // Below, we will normalize dt to a value between 0.0 and 1.0, scaled for
     // each state's duration. 0.0 means we're at the beginnin of the state's
     // timeline, 0.5 means we're in the middle, and 1.0 means we've reached the
     // end. >1.0 means we're past the deadline.
-    const unsigned long dt = currentTime - shoulderFlapsState_t0;
+    const long dt = currentTime - shoulderFlapsState_t0;
 
     if (currentTime >= shoulderFlapsState_tNextAction)
     {
@@ -212,13 +215,31 @@ void Back::loopShoulderFlaps()
         }
         case ShoulderFlapsState_e::Opening:
         {
-            attachShoulderFlaps();
-            leftShoulderFlap.write((int)LeftShoulderFlapAngles_e::Max);
-            rightShoulderFlap.write((int)RightShoulderFlapAngles_e::Max);
-            changeShoulderFlapsState(
-                ShoulderFlapsState_e::HoldingOpen,
-                (int)StateDurations_e::DurationOpeningShoulderFlaps
-                );
+
+            const double norm_dt = (double)dt / (double)StateDurations_e::DurationOpeningShoulderFlaps;
+            if (norm_dt <= 1.0)
+            {
+                attachShoulderFlaps();
+
+                double norm_angle = Easing::easeInOutLinear(norm_dt);
+                leftShoulderFlap.write((int)scale(norm_angle, (double)LeftShoulderFlapAngles_e::Min, (double)LeftShoulderFlapAngles_e::Max));
+                rightShoulderFlap.write((int)scale(norm_angle, (double)RightShoulderFlapAngles_e::Min, (double)RightShoulderFlapAngles_e::Max));
+            }
+            if (norm_dt >= 1.0)
+            {
+                changeShoulderFlapsState(ShoulderFlapsState_e::HoldingOpen);
+            }
+
+
+
+            // Serial.println("State Opening");
+            // attachShoulderFlaps();
+            // leftShoulderFlap.write((int)LeftShoulderFlapAngles_e::Max);
+            // rightShoulderFlap.write((int)RightShoulderFlapAngles_e::Max);
+            // changeShoulderFlapsState(
+            //     ShoulderFlapsState_e::HoldingOpen,
+            //     (int)StateDurations_e::DurationOpeningShoulderFlaps
+            //     );
             break;
         }
         case ShoulderFlapsState_e::HoldingOpen:
@@ -239,13 +260,28 @@ void Back::loopShoulderFlaps()
         }
         case ShoulderFlapsState_e::Closing:
         {
-            attachShoulderFlaps();
-            leftShoulderFlap.write((int)LeftShoulderFlapAngles_e::Min);
-            rightShoulderFlap.write((int)RightShoulderFlapAngles_e::Min);
-            changeShoulderFlapsState(
-                ShoulderFlapsState_e::HoldingClosed,
-                (int)StateDurations_e::DurationClosingShoulderFlaps
-                );
+            const double norm_dt = (double)dt / (double)StateDurations_e::DurationClosingShoulderFlaps;
+            if (norm_dt <= 1.0)
+            {
+                attachShoulderFlaps();
+
+                double norm_angle = Easing::easeInOutLinear(1.0 - norm_dt);
+                leftShoulderFlap.write((int)scale(norm_angle, (double)LeftShoulderFlapAngles_e::Min, (double)LeftShoulderFlapAngles_e::Max));
+                rightShoulderFlap.write((int)scale(norm_angle, (double)RightShoulderFlapAngles_e::Min, (double)RightShoulderFlapAngles_e::Max));
+            }
+            if (norm_dt >= 1.0)
+            {
+                changeShoulderFlapsState(ShoulderFlapsState_e::HoldingClosed);
+            }
+
+            // Serial.println("State Closing");
+            // attachShoulderFlaps();
+            // leftShoulderFlap.write((int)LeftShoulderFlapAngles_e::Min);
+            // rightShoulderFlap.write((int)RightShoulderFlapAngles_e::Min);
+            // changeShoulderFlapsState(
+            //     ShoulderFlapsState_e::HoldingClosed,
+            //     (int)StateDurations_e::DurationClosingShoulderFlaps
+            //     );
             break;
         }
         case ShoulderFlapsState_e::HoldingClosed:
@@ -271,14 +307,14 @@ void Back::loopBackFlaps()
     // Sample the current time once per loop to maintain consistent behavior
     // within this iteration. Two back to back calls to millis() could return
     // different values if we're at a millisecond boundary.
-    const unsigned long currentTime = millis();
+    const long currentTime = millis();
 
     // dt = delta T = change in time since we started processing a state.
     // Below, we will normalize dt to a value between 0.0 and 1.0, scaled for
     // each state's duration. 0.0 means we're at the beginnin of the state's
     // timeline, 0.5 means we're in the middle, and 1.0 means we've reached the
     // end. >1.0 means we're past the deadline.
-    const unsigned long dt = currentTime - backFlapsState_t0;
+    const long dt = currentTime - backFlapsState_t0;
 
     if (currentTime >= backFlapsState_tNextAction)
     {
@@ -292,13 +328,27 @@ void Back::loopBackFlaps()
         }
         case BackFlapsState_e::OpeningVerticalFlaps:
         {
-            attachVerticalFlaps();
-            leftVerticalFlap.write((int)LeftVerticalFlapAngles_e::Max);
-            rightVerticalFlap.write((int)RightVerticalFlapAngles_e::Max);
-            changeBackFlapsState(
-                BackFlapsState_e::HoldingVerticalFlapsOpen,
-                (int)StateDurations_e::DurationOpeningVerticalFlaps
-                );
+            const double norm_dt = (double)dt / (double)StateDurations_e::DurationOpeningVerticalFlaps;
+            if (norm_dt <= 1.0)
+            {
+                attachVerticalFlaps();
+
+                double norm_angle = Easing::easeInOutLinear(norm_dt);
+                leftVerticalFlap.write((int)scale(norm_angle, (double)LeftVerticalFlapAngles_e::Min, (double)LeftVerticalFlapAngles_e::Max));
+                rightVerticalFlap.write((int)scale(norm_angle, (double)RightVerticalFlapAngles_e::Min, (double)RightVerticalFlapAngles_e::Max));
+            }
+            if (norm_dt >= 1.0)
+            {
+                changeBackFlapsState(BackFlapsState_e::HoldingVerticalFlapsOpen);
+            }
+
+            // attachVerticalFlaps();
+            // leftVerticalFlap.write((int)LeftVerticalFlapAngles_e::Max);
+            // rightVerticalFlap.write((int)RightVerticalFlapAngles_e::Max);
+            // changeBackFlapsState(
+            //     BackFlapsState_e::HoldingVerticalFlapsOpen,
+            //     (int)StateDurations_e::DurationOpeningVerticalFlaps
+            //     );
             break;
         }
         case BackFlapsState_e::HoldingVerticalFlapsOpen:
@@ -307,20 +357,35 @@ void Back::loopBackFlaps()
             leftVerticalFlap.write((int)LeftVerticalFlapAngles_e::Max);
             rightVerticalFlap.write((int)RightVerticalFlapAngles_e::Max);
             changeBackFlapsState(
-                BackFlapsState_e::OpeningHorizontalFlaps,
-                (int)StateDurations_e::DurationHoldingShoulderFlapsOpen
+                BackFlapsState_e::Opened,
+                //BackFlapsState_e::OpeningHorizontalFlaps,
+                (int)StateDurations_e::DurationHoldingVerticalFlapsOpen
                 );
             break;
         }
         case BackFlapsState_e::OpeningHorizontalFlaps:
         {
-            attachHorizontalFlaps();
-            leftHorizontalFlap.write((int)LeftHorizontalFlapAngles_e::Max);
-            rightHorizontalFlap.write((int)RightHorizontalFlapAngles_e::Max);
-            changeBackFlapsState(
-                BackFlapsState_e::HoldingHorizontalFlapsOpen,
-                (int)StateDurations_e::DurationOpeningHorizontalFlaps
-                );
+            const double norm_dt = (double)dt / (double)StateDurations_e::DurationOpeningHorizontalFlaps;
+            if (norm_dt <= 1.0)
+            {
+                attachHorizontalFlaps();
+
+                double norm_angle = Easing::easeInOutLinear(norm_dt);
+                leftHorizontalFlap.write((int)scale(norm_angle, (double)LeftHorizontalFlapAngles_e::Min, (double)LeftHorizontalFlapAngles_e::Max));
+                rightHorizontalFlap.write((int)scale(norm_angle, (double)RightHorizontalFlapAngles_e::Min, (double)RightHorizontalFlapAngles_e::Max));
+            }
+            if (norm_dt >= 1.0)
+            {
+                changeBackFlapsState(BackFlapsState_e::HoldingHorizontalFlapsOpen);
+            }
+
+            // attachHorizontalFlaps();
+            // leftHorizontalFlap.write((int)LeftHorizontalFlapAngles_e::Max);
+            // rightHorizontalFlap.write((int)RightHorizontalFlapAngles_e::Max);
+            // changeBackFlapsState(
+            //     BackFlapsState_e::HoldingHorizontalFlapsOpen,
+            //     (int)StateDurations_e::DurationOpeningHorizontalFlaps
+            //     );
             break;
         }
         case BackFlapsState_e::HoldingHorizontalFlapsOpen:
@@ -336,19 +401,33 @@ void Back::loopBackFlaps()
         }
         case BackFlapsState_e::Opened:
         {
-            detachVerticalFlaps();
-            detachHorizontalFlaps();
+            //detachVerticalFlaps();
+            //detachHorizontalFlaps();
             break;
         }
         case BackFlapsState_e::ClosingHorizontalFlaps:
         {
-            attachHorizontalFlaps();
-            leftHorizontalFlap.write((int)LeftHorizontalFlapAngles_e::Min);
-            rightHorizontalFlap.write((int)RightHorizontalFlapAngles_e::Min);
-            changeBackFlapsState(
-                BackFlapsState_e::HoldingHorizontalFlapsClosed,
-                (int)StateDurations_e::DurationClosingHorizontalFlaps
-                );
+            const double norm_dt = (double)dt / (double)StateDurations_e::DurationClosingHorizontalFlaps;
+            if (norm_dt <= 1.0)
+            {
+                attachHorizontalFlaps();
+
+                double norm_angle = Easing::easeInOutLinear(1.0 - norm_dt);
+                leftHorizontalFlap.write((int)scale(norm_angle, (double)LeftHorizontalFlapAngles_e::Min, (double)LeftHorizontalFlapAngles_e::Max));
+                rightHorizontalFlap.write((int)scale(norm_angle, (double)RightHorizontalFlapAngles_e::Min, (double)RightHorizontalFlapAngles_e::Max));
+            }
+            if (norm_dt >= 1.0)
+            {
+                changeBackFlapsState(BackFlapsState_e::HoldingHorizontalFlapsClosed);
+            }
+
+            // attachHorizontalFlaps();
+            // leftHorizontalFlap.write((int)LeftHorizontalFlapAngles_e::Min);
+            // rightHorizontalFlap.write((int)RightHorizontalFlapAngles_e::Min);
+            // changeBackFlapsState(
+            //     BackFlapsState_e::HoldingHorizontalFlapsClosed,
+            //     (int)StateDurations_e::DurationClosingHorizontalFlaps
+            //     );
             break;
         }
         case BackFlapsState_e::HoldingHorizontalFlapsClosed:
@@ -364,13 +443,26 @@ void Back::loopBackFlaps()
         }
         case BackFlapsState_e::ClosingVerticalFlaps:
         {
-            attachVerticalFlaps();
-            leftVerticalFlap.write((int)LeftVerticalFlapAngles_e::Min);
-            rightVerticalFlap.write((int)RightVerticalFlapAngles_e::Min);
-            changeBackFlapsState(
-                BackFlapsState_e::HoldingVerticalFlapsClosed,
-                (int)StateDurations_e::DurationClosingVerticalFlaps
-                );
+            const double norm_dt = (double)dt / (double)StateDurations_e::DurationClosingVerticalFlaps;
+            if (norm_dt <= 1.0)
+            {
+                attachVerticalFlaps();
+
+                double norm_angle = Easing::easeInOutLinear(1.0 - norm_dt);
+                leftVerticalFlap.write((int)scale(norm_angle, (double)LeftVerticalFlapAngles_e::Min, (double)LeftVerticalFlapAngles_e::Max));
+                rightVerticalFlap.write((int)scale(norm_angle, (double)RightVerticalFlapAngles_e::Min, (double)RightVerticalFlapAngles_e::Max));
+            }
+            if (norm_dt >= 1.0)
+            {
+                changeBackFlapsState(BackFlapsState_e::HoldingVerticalFlapsClosed);
+            }
+            // attachVerticalFlaps();
+            // leftVerticalFlap.write((int)LeftVerticalFlapAngles_e::Min);
+            // rightVerticalFlap.write((int)RightVerticalFlapAngles_e::Min);
+            // changeBackFlapsState(
+            //     BackFlapsState_e::HoldingVerticalFlapsClosed,
+            //     (int)StateDurations_e::DurationClosingVerticalFlaps
+            //     );
             break;
         }
         case BackFlapsState_e::HoldingVerticalFlapsClosed:
@@ -463,6 +555,7 @@ void Back::onValueChanged(
             switch ((FlapsCommands)msg.getCommand())
             {
             case FlapsCommands::CLOSE:
+    Serial.println( F("Back close shoulder flaps") );
                 if (backFlapsState == BackFlapsState_e::Closed
                  || backFlapsState == BackFlapsState_e::HoldingVerticalFlapsClosed)
                 {
@@ -472,7 +565,8 @@ void Back::onValueChanged(
                 {
                     // Force the back flaps to close first (unsafe to close shoulder flaps while vertical flaps are open)
                     changeBackFlapsState(
-                        BackFlapsState_e::ClosingHorizontalFlaps
+                        //BackFlapsState_e::ClosingHorizontalFlaps
+                        BackFlapsState_e::ClosingVerticalFlaps
                         );
                     changeShoulderFlapsState(
                         ShoulderFlapsState_e::Closing,

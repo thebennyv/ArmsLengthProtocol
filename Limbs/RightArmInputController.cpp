@@ -104,7 +104,7 @@ void RightArmInputController::loop()
 
 
     // Read flex sensor for repulsor
-    int flexSensorReadingMv = analogReadMilliVolts((int)RightArmPin_e::FlexSensor);
+    int flexSensorReadingMv = 3000; //analogReadMilliVolts((int)RightArmPin_e::FlexSensor);
     if (!flexSenorTriggered)
     {
         if (flexSensorReadingMv < flexSensorWatermarkOn)
@@ -215,7 +215,22 @@ void RightArmInputController::buttonPressed(AttachedButton* button, NumberOfPres
         case LONGPRESS_STOP:
             break;
         case 1:
-            toggleShoulderFlaps();
+            //toggleShoulderFlaps();
+            {
+                static bool on = false;
+                if (on)
+                {
+rightArmRepulsor(RepulsorCommands::OFF);
+on = false;
+                }
+                else
+                {
+rightArmRepulsor(RepulsorCommands::CHARGE);
+on = true;
+
+                }
+            }
+            
             break;
         case 2:
             toggleAllBackFlaps();
@@ -405,6 +420,25 @@ void RightArmInputController::toggleFaceplate()
     else
     {
         // Error
+    }
+
+    if (!isClosed) // so, we are closing it now
+    {
+        delay(350);
+
+        msg.setService(Services::CHEST_SERVICE);
+        msg.setCharacteristic(Characteristics::AUDIO_CHARACTERISTIC);
+        msg.setCommand((uint32_t)AudioCommands::CLANG);
+
+        if (msg.serialize(buf, sizeof(buf), numBytesSerialized))
+        {
+            characteristicRegistry.updateCharacteristic(UUIDs::UUID_AUDIO_CHARACTERISTIC, buf, numBytesSerialized);
+            //delay(500);
+        }
+        else
+        {
+            // Error
+        }
     }
 }
 
