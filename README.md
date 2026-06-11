@@ -1,5 +1,5 @@
 # Arm's Length Protocol
-An Iron Man suit controller built around Arduino, Bluetooth Low Energy, and the Xiao ESP32 C6 microcontroller.
+An Iron Man suit controller built around Arduino, Bluetooth Low Energy, and the Xiao ESP32 S3 microcontroller.
 
 This project is inspired by https://github.com/crashworks3d/Iron_Man_Servo, but uses none of its code.
 
@@ -10,3 +10,4 @@ Arduino Libraries:
   * (with ESP32PWM)
 * Adafruit Neopixel v1.15.2
 * FastLED by Daniel Garcia v3.10.3
+* DFPlayerMini by Makuna v1.0.7

@@ -3,7 +3,7 @@
 //
 // Description:
 //   An Iron Man suit controller built around Arduino, Bluetooth Low Energy,
-//   and the Xiao ESP32 C6 microcontroller.
+//   and the Xiao ESP32 S3 microcontroller.
 //   This project is inspired by https://github.com/crashworks3d/Iron_Man_Servo,
 //   but uses none of its code.
 //
@@ -12,11 +12,10 @@
 //     OneButton by Matthias Hertel v2.6.1
 //     ESP32Servo by Kevin Harrington, John K. Bennett v3.2.0 (modified)
 //       (with ESP32PWM)
-//     FastLED by Daniel Garcia v3.10.3
 //     Adafruit Neopixel by Adafruit v1.15.5
+//     FastLED by Daniel Garcia v3.10.3
 //     Protothreads by Ben Artin, Adam Dunkels v1.4.0-arduino.beta.1
 //     DFPlayerMini by Makuna v1.0.7
-//     ESPSoftwareSerial by Dirk Kaar, Peter Lerup v8.1.0s
 // =============================================================================
 
 #include <Arduino.h>
