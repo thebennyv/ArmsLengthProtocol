@@ -4,7 +4,7 @@
 #include "IArduinoApplication.h"
 #include "ArmsLengthMessageHandler.h"
 #include "BLECharacteristicRegistry.h"
-#include "ESP32Servo.h"
+#include "lib/ESP32Servo.h"
 
 // #include <ESP32ServoController.h>
 // using namespace MDO::ESP32ServoController;

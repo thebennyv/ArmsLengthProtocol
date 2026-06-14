@@ -29,7 +29,7 @@
 #define LIMB_RIGHT_LEG 6
 #define LIMB_LEFT_LEG 7
 
-#define LIMB LIMB_HELMET
+//#define LIMB LIMB_HELMET
 //#define LIMB LIMB_CHEST
 //#define LIMB LIMB_BACK
 //#define LIMB LIMB_RIGHT_ARM
@@ -37,12 +37,15 @@
 //#define LIMB LIMB_RIGHT_LEG
 //#define LIMB LIMB_LEFT_LEG
 
+#ifndef LIMB
+#define LIMB LIMB_HELMET
+#endif
+
 #if LIMB == LIMB_RIGHT_ARM /* Pick a single limb to be the BLE server */
 #define IS_BLE_SERVER 1
 #else
 #define IS_BLE_SERVER 0
 #endif
-
 
 #if IS_BLE_SERVER
   #include "ArmsLengthServer.h"
@@ -57,9 +60,11 @@
 // and are never destroyed during the lifetime of the program.
 typedef std::vector<IArduinoApplication*> Applications;
 
+#include "lib/ESP32PWM.cpp"
+#include "lib/ESP32Servo.cpp"
+
 #if LIMB == LIMB_HELMET
 
-  #include "Helmet.h"
   #include "Limbs/Helmet.cpp"
   BLEDeviceType bleDevice("Helmet");
   Helmet limb(bleDevice);
@@ -67,7 +72,6 @@ typedef std::vector<IArduinoApplication*> Applications;
 
 #elif LIMB == LIMB_CHEST
 
-  #include "Chest.h"
   #include "Limbs/Chest.cpp"
   BLEDeviceType bleDevice("Chest");
   Chest limb(bleDevice);
@@ -75,7 +79,6 @@ typedef std::vector<IArduinoApplication*> Applications;
 
 #elif LIMB == LIMB_BACK
 
-  #include "Back.h"
   #include "Limbs/Back.cpp"
   BLEDeviceType bleDevice("Back");
   Back limb(bleDevice);
@@ -83,9 +86,7 @@ typedef std::vector<IArduinoApplication*> Applications;
 
 #elif LIMB == LIMB_RIGHT_ARM
 
-  #include "RightArm.h"
   #include "Limbs/RightArm.cpp"
-  #include "RightArmInputController.h"
   #include "Limbs/RightArmInputController.cpp"
   #include "ArmsLengthScripts.h"
   
@@ -100,9 +101,7 @@ typedef std::vector<IArduinoApplication*> Applications;
 
 #elif LIMB == LIMB_LEFT_ARM
 
-  #include "LeftArm.h"
   #include "Limbs/LeftArm.cpp"
-  #include "LeftArmInputController.h"
   #include "Limbs/LeftArmInputController.cpp"
   
   // For installation instructions see: https://github.com/mathertel/OneButton
@@ -115,7 +114,6 @@ typedef std::vector<IArduinoApplication*> Applications;
 
 #elif LIMB == LIMB_RIGHT_LEG
 
-  #include "RightLeg.h"
   #include "Limbs/RightLeg.cpp"
 
   BLEDeviceType bleDevice("RightLeg");
@@ -124,7 +122,6 @@ typedef std::vector<IArduinoApplication*> Applications;
 
 #elif LIMB == LIMB_LEFT_LEG
 
-  #include "LeftLeg.h"
   #include "Limbs/LeftLeg.cpp"
 
   BLEDeviceType bleDevice("LeftLeg");

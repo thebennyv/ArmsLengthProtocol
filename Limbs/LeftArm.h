@@ -1,18 +1,18 @@
-#ifndef RIGHT_ARM_H
-#define RIGHT_ARM_H
+#ifndef LEFT_ARM_H
+#define LEFT_ARM_H
 
 #include "IArduinoApplication.h"
 #include "ArmsLengthMessageHandler.h"
 #include "BLECharacteristicRegistry.h"
-#include "ESP32Servo.h"
+#include "lib/ESP32Servo.h"
 #include <Adafruit_NeoPixel.h>
 
-class RightArm :
+class LeftArm :
     public IArduinoApplication
 {
 public:
-    RightArm(BLECharacteristicRegistry& characteristicRegistry);
-    virtual ~RightArm();
+    LeftArm(BLECharacteristicRegistry& characteristicRegistry);
+    virtual ~LeftArm();
     
     void setup() override;
     void loop() override;
@@ -103,8 +103,8 @@ private:
     // All durations are in milliseconds
     enum class LaserStateDurations_e
     {
-        DurationOpening = 220*10*2,
-        DurationClosing = 150*10
+        DurationOpening = 220,
+        DurationClosing = 150
     };
 
     enum class LaserState_e
@@ -127,4 +127,4 @@ private:
 protected:
 };
 
-#endif // RIGHT_ARM_H
+#endif // LEFT_ARM_H

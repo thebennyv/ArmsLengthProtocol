@@ -5,7 +5,7 @@
  *      Author: hephaestus
  */
 
-#include <ESP32PWM.h>
+#include "ESP32PWM.h"
 #include "esp32-hal-ledc.h"
 
 // initialize the class variable ServoCount
@@ -19,7 +19,7 @@ int ESP32PWM::timerCount[4] = { 0, 0, 0, 0 };
 MCPWMTimerInfo ESP32PWM::mcpwmTimers[MCPWM_NUM_UNITS][MCPWM_NUM_TIMERS_PER_UNIT];
 #endif
 
-static const char* TAG = "ESP32PWM";
+#define TAG "ESP32PWM"
 
 // The ChannelUsed array elements are 0 if never used, 1 if in use, and -1 if used and disposed
 // (i.e., available for reuse)
@@ -616,3 +616,5 @@ ESP32PWM* pwmFactory(int pin) {
 #endif
 	return NULL;
 }
+
+#undef TAG

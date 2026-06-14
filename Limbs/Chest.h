@@ -4,7 +4,7 @@
 #include "IArduinoApplication.h"
 #include "ArmsLengthMessageHandler.h"
 #include "BLECharacteristicRegistry.h"
-#include "ESP32Servo.h"
+#include "lib/ESP32Servo.h"
 #include <Adafruit_NeoPixel.h>
 #include "DFPlayerMini.h"
 

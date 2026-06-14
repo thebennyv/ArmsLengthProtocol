@@ -50,12 +50,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 * The ESP32 is a 32 bit processor that includes FP support; this code reflects that fact.
 */
 
-#include <ESP32Servo.h>
+#include "ESP32Servo.h"
 #if defined(ARDUINO)
 	#include "Arduino.h"
 #endif
 
-static const char* TAG = "ESP32Servo";
+#define TAG "ESP32Servo"
 
 Servo::Servo()
 {		// initialize this channel with plausible values, except pin # (we set pin # when attached)
@@ -271,4 +271,4 @@ int Servo::ticksToUs(int ticks)
     return (int)((double)ticks * ((double)REFRESH_USEC / (double)this->timer_width_ticks)/(((double)REFRESH_CPS)/50.0));
 }
 
- 
+#undef TAG

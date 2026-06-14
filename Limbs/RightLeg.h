@@ -1,17 +1,17 @@
-#ifndef LEFT_LEG_H
-#define LEFT_LEG_H
+#ifndef RIGHT_LEG_H
+#define RIGHT_LEG_H
 
 #include "IArduinoApplication.h"
 #include "ArmsLengthMessageHandler.h"
 #include "BLECharacteristicRegistry.h"
-#include "ESP32Servo.h"
+#include "lib/ESP32Servo.h"
 
-class LeftLeg :
+class RightLeg :
     public IArduinoApplication
 {
 public:
-    LeftLeg(BLECharacteristicRegistry& characteristicRegistry);
-    virtual ~LeftLeg();
+    RightLeg(BLECharacteristicRegistry& characteristicRegistry);
+    virtual ~RightLeg();
     
     void setup() override;
     void loop() override;
@@ -71,4 +71,4 @@ private:
 protected:
 };
 
-#endif // LEFT_LEG_H
+#endif // RIGHT_LEG_H
